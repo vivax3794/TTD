@@ -5,7 +5,12 @@
 #![warn(missing_debug_implementations)]
 #![warn(clippy::missing_docs_in_private_items)]
 
+mod game_grid;
 mod state;
+
+use state::Main as MainState;
+use state::Pause as PauseState;
+use state::Turn as TurnState;
 
 use bevy::{prelude::*, winit::WinitSettings};
 use iyes_loopless::prelude::*;
@@ -25,14 +30,13 @@ impl Plugin for GamePlugin {
                 ..default()
             })
             .insert_resource(ClearColor(BACK_GROUND_COLOR));
-        
+
         app.add_startup_system(create_camera);
 
         // Setup starting state
         app.add_loopless_state(state::Main::default());
     }
 }
-
 
 /// Create a 2d camera to render scenes
 fn create_camera(mut commands: Commands) {

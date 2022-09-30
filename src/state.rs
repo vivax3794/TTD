@@ -57,7 +57,7 @@ pub enum Turn {
 
 impl Turn {
     /// Get the next enum variant in the turn order
-    pub fn next_in_order(&self) -> Self {
+    pub fn next_in_order(self) -> Self {
         match self {
             Self::EnemyTurnStart => Self::EnemyMove,
             Self::EnemyMove => Self::EnemySpawn,
@@ -72,7 +72,7 @@ impl Turn {
 
     // This is the only place in the file that deals with bevy and iyes_loopless directly, we don't need to pull in an import for that
     /// Insert a resource to move to the next state!
-    pub fn go_to_next_state(&self, mut commands: bevy::prelude::Commands) {
+    pub fn go_to_next_state(self, mut commands: bevy::prelude::Commands) {
         let next_state = iyes_loopless::state::NextState(self.next_in_order());
         commands.insert_resource(next_state);
     }
