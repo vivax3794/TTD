@@ -8,6 +8,9 @@
 mod game_grid;
 mod state;
 
+#[cfg(debug_assertions)]
+mod debug_system;
+
 use state::Main as MainState;
 use state::Pause as PauseState;
 use state::Turn as TurnState;
@@ -35,6 +38,11 @@ impl Plugin for GamePlugin {
 
         // Setup starting state
         app.add_loopless_state(state::Main::default());
+
+        #[cfg(debug_assertions)]
+        {
+            app.add_plugin(debug_system::DebugPlugin);
+        }
     }
 }
 
