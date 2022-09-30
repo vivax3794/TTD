@@ -1,40 +1,10 @@
 //! Game State management
 
-#[derive(Hash, Debug, Clone, Copy, PartialEq, Eq)]
-/// Main game state
-pub enum Main {
-    /// A game is running
-    Playing,
-    /// We are on the main menu
-    MainMenu,
-}
-
-impl Default for Main {
-    fn default() -> Self {
-        // TODO: Make it start at the main menu
-        Main::Playing
-    }
-}
-
-/// Is the game paused?
-#[derive(Hash, Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Pause {
-    /// Game is paused, logic should be stopped, but be able to resume from where it stopped!
-    Paused,
-    /// Game is running, logic should be active!
-    Running,
-}
-
-impl Default for Pause {
-    fn default() -> Self {
-        Pause::Running
-    }
-}
 
 // IMPORTANT: IF you add or modify the order of these variant make sure to edit the `next_in_order` function!
 
 /// What part of the turn are we on?
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Hash, Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Turn {
     /// Turn start events are handled
     EnemyTurnStart,
@@ -76,4 +46,54 @@ impl Turn {
         let next_state = iyes_loopless::state::NextState(self.next_in_order());
         commands.insert_resource(next_state);
     }
+}
+
+#[derive(Hash, Debug, Clone, Copy, PartialEq, Eq)]
+/// Main game state
+pub enum Main {
+    /// A game is running
+    Playing,
+    /// We are on the main menu
+    MainMenu,
+}
+
+impl Default for Main {
+    fn default() -> Self {
+        // TODO: Make it start at the main menu
+        Main::Playing
+    }
+}
+
+/// Handle if the game is currently paused
+#[derive(Default)]
+pub struct IsPaused(pub bool);
+
+use bevy::prelude::*;
+use iyes_loopless::{prelude::AppLooplessStateExt, state::NextState};
+
+/// Manage init state
+pub struct StatePlugin;
+impl Plugin for StatePlugin {
+   fn build(&self, app: &mut App) {
+       app.add_loopless_state(Main::default());
+       app.add_enter_system(Main::Playing, enter_game_state);
+       app.add_exit_system(Main::Playing, leave_game_state);
+   } 
+}
+
+/// Is game paused?
+pub fn is_paused(paused: Res<IsPaused>) -> bool {
+    paused.0
+}
+
+/// Setup resources for playing state
+fn enter_game_state(mut commands: Commands) {
+    commands.insert_resource(IsPaused::default());
+    // Make sure turn state is correct.
+    commands.insert_resource(NextState(Turn::EnemyTurnStart));
+}
+
+/// Remove resources only used in playing state
+fn leave_game_state(mut commands: Commands) {
+    commands.remove_resource::<IsPaused>()
 }

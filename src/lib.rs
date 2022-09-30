@@ -8,12 +8,12 @@
 
 mod grid;
 mod state;
+mod mouse_location;
 
 #[cfg(debug_assertions)]
 mod debug_system;
 
 use state::Main as MainState;
-use state::Pause as PauseState;
 use state::Turn as TurnState;
 
 use bevy::{prelude::*, winit::WinitSettings};
@@ -37,11 +37,12 @@ impl Plugin for GamePlugin {
 
         app.add_startup_system(create_camera);
 
-        // Setup starting state
-        app.add_loopless_state(state::Main::default());
-
         // Plugins
+        app.add_plugin(state::StatePlugin);
         app.add_plugin(grid::GridPlugin);
+        app.add_plugin(mouse_location::MouseWorldPlugin);
+
+
         #[cfg(debug_assertions)]
         {
             app.add_plugin(debug_system::DebugPlugin);
@@ -49,7 +50,11 @@ impl Plugin for GamePlugin {
     }
 }
 
+/// Marker for the main game camera
+#[derive(Debug, Copy, Clone, Component)]
+pub struct MainCamera;
+
 /// Create a 2d camera to render scenes
 fn create_camera(mut commands: Commands) {
-    commands.spawn_bundle(Camera2dBundle::new_with_far(1000.0));
+    commands.spawn_bundle(Camera2dBundle::new_with_far(100.0)).insert(MainCamera);
 }

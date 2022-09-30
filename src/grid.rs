@@ -36,6 +36,19 @@ impl IndexMut<(usize, usize)> for GridData {
     }
 }
 
+impl Index<Vec2> for GridData {
+    type Output = Option<Entity>;
+    fn index(&self, index: Vec2) -> &Self::Output {
+        &self[(index.x as usize, index.y as usize)]
+    }
+}
+
+impl IndexMut<Vec2> for GridData {
+    fn index_mut(&mut self, index: Vec2) -> &mut Self::Output {
+        &mut self[(index.x as usize, index.y as usize)]
+    }
+}
+
 /// This plugin will make the [`gridPosition`] component do its job.
 pub struct GridPlugin;
 impl Plugin for GridPlugin {
@@ -56,7 +69,9 @@ fn place_grid_entities(grid: Res<GridData>, mut query: Query<&mut Transform>) {
         for (x, cols) in grid.0.iter().enumerate() {
             for (y, entity) in cols.iter().enumerate() {
                 if let Some(entity) = entity {
-                    let mut trans = query.get_mut(*entity).expect("DESYNC BETWEEN GRID AND ENTITIES");
+                    let mut trans = query
+                        .get_mut(*entity)
+                        .expect("DESYNC BETWEEN GRID AND ENTITIES");
 
                     trans.translation.x = (x - CELL_AMOUNT_X) as f32 * GRID_DIMENSIONS;
                     trans.translation.y = (y - CELL_AMOUNT_Y) as f32 * GRID_DIMENSIONS;
@@ -64,4 +79,14 @@ fn place_grid_entities(grid: Res<GridData>, mut query: Query<&mut Transform>) {
             }
         }
     }
+}
+
+pub struct GridMouseLocation(Vec2);
+
+fn update_grid_mouse_location(
+    grid_mouse_location: ResMut<GridMouseLocation>,
+    windows: Res<Windows>,
+    q_camera: Query<(&Camera, &GlobalTransform)>,
+) {
+
 }
