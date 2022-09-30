@@ -1,11 +1,12 @@
 //! Core game logic
 
-#![warn(clippy::pedantic)]
+// #![warn(clippy::pedantic)]
+#![allow(clippy::module_name_repetitions)]
 #![warn(missing_copy_implementations)]
 #![warn(missing_debug_implementations)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-mod game_grid;
+mod grid;
 mod state;
 
 #[cfg(debug_assertions)]
@@ -39,6 +40,8 @@ impl Plugin for GamePlugin {
         // Setup starting state
         app.add_loopless_state(state::Main::default());
 
+        // Plugins
+        app.add_plugin(grid::GridPlugin);
         #[cfg(debug_assertions)]
         {
             app.add_plugin(debug_system::DebugPlugin);
