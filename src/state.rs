@@ -1,5 +1,8 @@
 //! Game State management
 
+use bevy::prelude::*;
+use iyes_loopless::{prelude::AppLooplessStateExt, state::NextState};
+
 
 // IMPORTANT: IF you add or modify the order of these variant make sure to edit the `next_in_order` function!
 
@@ -68,8 +71,6 @@ impl Default for Main {
 #[derive(Default)]
 pub struct IsPaused(pub bool);
 
-use bevy::prelude::*;
-use iyes_loopless::{prelude::AppLooplessStateExt, state::NextState};
 
 /// Manage init state
 pub struct StatePlugin;
@@ -78,7 +79,7 @@ impl Plugin for StatePlugin {
        app.add_loopless_state(Main::default());
        app.add_enter_system(Main::Playing, enter_game_state);
        app.add_exit_system(Main::Playing, leave_game_state);
-   } 
+    } 
 }
 
 /// Is game paused?
@@ -93,7 +94,12 @@ fn enter_game_state(mut commands: Commands) {
     commands.insert_resource(NextState(Turn::EnemyTurnStart));
 }
 
-/// Remove resources only used in playing state
-fn leave_game_state(mut commands: Commands) {
+/// Entity 
+#[derive(Component, Clone, Copy, PartialEq, Eq)]
+pub struct RemoveOnGameplayExit;
+
+/// Remove entities marked as gameplay only when we exit the gameplay state
+fn leave_game_state(mut commands: Commands, query: Query<Entity, With<RemoveOnGameplayExit>>) {
+    query.for_each(|entity| commands.entity(entity).despawn_recursive());
     commands.remove_resource::<IsPaused>()
 }
