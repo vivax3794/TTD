@@ -6,19 +6,23 @@
 #![warn(missing_debug_implementations)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-mod grid;
+mod turns;
 mod state;
+
 mod mouse_location;
 mod camera_control;
+
+mod grid;
+mod enemy;
 
 #[cfg(debug_assertions)]
 mod debug_system;
 
 use state::Main as MainState;
-use state::Turn as TurnState;
 use state::RemoveOnGameplayExit;
 
 use camera_control::MainCamera;
+use grid::GridLocation;
 
 
 use bevy::{prelude::*, winit::WinitSettings};
@@ -35,7 +39,6 @@ impl Plugin for GamePlugin {
         app.insert_resource(WinitSettings::game())
             .insert_resource(WindowDescriptor {
                 title: String::from("TTD"),
-                present_mode: bevy::window::PresentMode::AutoVsync,
                 ..default()
             })
             .insert_resource(ClearColor(BACK_GROUND_COLOR));
@@ -44,9 +47,11 @@ impl Plugin for GamePlugin {
 
         // Plugins
         app.add_plugin(state::StatePlugin);
-        app.add_plugin(grid::GridPlugin);
+        app.add_plugin(turns::TurnPlugin);
         app.add_plugin(mouse_location::MouseWorldPlugin);
         app.add_plugin(camera_control::CameraPlugin);
+        app.add_plugin(grid::GridPlugin);
+        app.add_plugin(enemy::EnemyPlugin);
 
 
         #[cfg(debug_assertions)]
