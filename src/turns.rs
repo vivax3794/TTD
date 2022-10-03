@@ -26,17 +26,25 @@ pub enum TurnPart {
     PlayerTurnEnd,
 }
 
+/// Are we in a turn or are we switching?
+
 #[derive(Hash, Debug, Clone, Copy, PartialEq, Eq)]
-enum TurnState {
+pub enum TurnState {
+    /// We are not in gamplay
+    None,
+    /// We are in the middle of a turn part
     InTurn(TurnPart),
-    Switching(TurnPart, TurnPart),
+    /// We are switching to a new turn
+    Switching(TurnPart),
 }
 
 /// Implments auto switching turn state when turn progress is done!
 pub struct TurnPlugin;
 impl Plugin for TurnPlugin {
     fn build(&self, app: &mut App) {
-        app.add_loopless_state(TurnState::InTurn(TurnPart::EnemyTurnStart));
+        app.add_loopless_state(TurnState::None)
+            .add_enter_system(crate::MainState::Playing, set_inital_turn_state)
+            .add_exit_system(crate::MainState::Playing, remove_turn_state);
 
         use TurnPart::*;
         let turn_order = [
@@ -51,9 +59,28 @@ impl Plugin for TurnPlugin {
             EnemyTurnStart,
         ];
         for (&from, &to) in turn_order.iter().zip(turn_order.iter().skip(1)) {
-            app.add_plugin(ProgressPlugin::new(TurnState::InTurn(from)).continue_to(TurnState::Switching(from, to)));
+            app.add_plugin(
+                ProgressPlugin::new(TurnState::InTurn(from))
+                    .continue_to(TurnState::Switching(to)),
+            );
+            app.add_plugin(
+                ProgressPlugin::new(TurnState::Switching(to)).continue_to(TurnState::InTurn(to))
+            );
         }
+
     }
 }
 
-// fn is_switching()
+/// When we enter gameplay set the inital turn part
+fn set_inital_turn_state(mut commands: Commands) {
+    commands.insert_resource(NextState(TurnState::InTurn(TurnPart::EnemyTurnStart)));
+
+        
+}
+
+/// Set turn state to None when we are not in gamplay
+fn remove_turn_state(mut commands: Commands) {
+    commands.insert_resource(NextState(TurnState::None))
+}
+
+

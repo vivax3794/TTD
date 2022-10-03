@@ -53,9 +53,9 @@ fn move_camera(
     let window = windows.get_primary().unwrap();
 
     if let Some(mouse_location) = window.cursor_position() {
-        if buttons.just_pressed(MouseButton::Middle) {
+        if buttons.just_pressed(MouseButton::Right) {
             reference_pos.0 = mouse_location;
-        } else if buttons.pressed(MouseButton::Middle) {
+        } else if buttons.pressed(MouseButton::Right) {
             let offset = reference_pos.0 - mouse_location;
             let offset = offset * camera_location.scale.x;
             camera_location.translation += offset.extend(0.0);

@@ -10,6 +10,7 @@ bevy_prototype_lyon = "0.6.0"
 
 iyes_loopless = "0.7.1"
 iyes_progress = {version = "0.5.0", features=["iyes_loopless"]}
+bevy_tweening = "0.5.0"
 
 bevy_editor_pls = "0.1.1"
 # bevy-inspector-egui = "*"
