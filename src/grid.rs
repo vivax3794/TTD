@@ -1,16 +1,17 @@
 //! Fix enemies and towers to a grid.
 
 use bevy::prelude::*;
+use bevy_editor_pls::egui::Grid;
 use bevy_prototype_lyon::prelude::*;
 use iyes_loopless::prelude::*;
 
 // TODO: Make this be based on the window size? should be simple enough!
 /// We want grid cells to be squares, so we only define one side
-const GRID_DIMENSIONS: f32 = 50.0;
+const GRID_DIMENSIONS: f32 = crate::assets::ASSET_SCALE_UP * 16.0 + 0.0;
 /// How many cells in the Y should we have
-const CELL_AMOUNT_Y: usize = 5;
+const CELL_AMOUNT_Y: usize = 4;
 /// How many cells in the x should we have?
-const CELL_AMOUNT_X: usize = 10;
+const CELL_AMOUNT_X: usize = 7;
 
 /// Location on the mouse on the grid!
 pub struct GridMouseLocation(pub usize, pub usize);
@@ -39,7 +40,7 @@ impl Plugin for GridPlugin {
 }
 
 /// Place grid entities in the current real world location!
-fn place_grid_entities(mut query: Query<(&mut Transform, &GridLocation)>) {
+fn place_grid_entities(mut query: Query<(&mut Transform, &GridLocation), Changed<GridLocation>>) {
     query.for_each_mut(|(mut trans, grid_location)| {
         trans.translation.x = (grid_location.x as f32 - CELL_AMOUNT_X as f32) * GRID_DIMENSIONS
             + GRID_DIMENSIONS / 2.0;

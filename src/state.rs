@@ -7,17 +7,12 @@ use iyes_loopless::{prelude::AppLooplessStateExt, state::NextState};
 #[derive(Hash, Debug, Clone, Copy, PartialEq, Eq)]
 /// Main game state
 pub enum Main {
+    /// Loading game assets!
+    LoadingAssets,
     /// A game is running
     Playing,
     /// We are on the main menu
     MainMenu,
-}
-
-impl Default for Main {
-    fn default() -> Self {
-        // TODO: Make it start at the main menu
-        Main::Playing
-    }
 }
 
 /// Handle if the game is currently paused
@@ -29,7 +24,6 @@ pub struct IsPaused(pub bool);
 pub struct StatePlugin;
 impl Plugin for StatePlugin {
    fn build(&self, app: &mut App) {
-       app.add_loopless_state(Main::default());
        app.add_enter_system(Main::Playing, enter_game_state);
        app.add_exit_system(Main::Playing, leave_game_state);
     } 

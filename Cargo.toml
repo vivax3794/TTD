@@ -6,11 +6,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy_prototype_lyon = "0.6.0"
+bevy_prototype_lyon = "0.6.0" # Time to replace this?
+bevy_asset_loader = {version = "0.12.1", features = ["stageless", "progress_tracking_stageless", "2d"]}  
 
 iyes_loopless = "0.7.1"
 iyes_progress = {version = "0.5.0", features=["iyes_loopless"]}
-bevy_tweening = "0.5.0"
+# bevy_tweening = "0.5.0"
 
 bevy_editor_pls = "0.1.1"
 # bevy-inspector-egui = "*"

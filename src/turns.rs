@@ -1,6 +1,7 @@
 //! Tracks and controls turn switching
 
-use bevy::prelude::*;
+use bevy::{prelude::*, reflect::erased_serde::__private::serde::__private::de};
+use bevy_prototype_lyon::prelude::*;
 use iyes_loopless::prelude::*;
 use iyes_progress::prelude::*;
 
@@ -42,7 +43,8 @@ pub enum TurnState {
 pub struct TurnPlugin;
 impl Plugin for TurnPlugin {
     fn build(&self, app: &mut App) {
-        app.add_loopless_state(TurnState::None)
+        // app.add_loopless_state(TurnState::None)
+        app
             .add_enter_system(crate::MainState::Playing, set_inital_turn_state)
             .add_exit_system(crate::MainState::Playing, remove_turn_state);
 
@@ -60,14 +62,12 @@ impl Plugin for TurnPlugin {
         ];
         for (&from, &to) in turn_order.iter().zip(turn_order.iter().skip(1)) {
             app.add_plugin(
-                ProgressPlugin::new(TurnState::InTurn(from))
-                    .continue_to(TurnState::Switching(to)),
+                ProgressPlugin::new(TurnState::InTurn(from)).continue_to(TurnState::Switching(to)),
             );
             app.add_plugin(
-                ProgressPlugin::new(TurnState::Switching(to)).continue_to(TurnState::InTurn(to))
+                ProgressPlugin::new(TurnState::Switching(to)).continue_to(TurnState::InTurn(to)),
             );
         }
-
     }
 }
 
@@ -75,12 +75,17 @@ impl Plugin for TurnPlugin {
 fn set_inital_turn_state(mut commands: Commands) {
     commands.insert_resource(NextState(TurnState::InTurn(TurnPart::EnemyTurnStart)));
 
-        
+    commands.spawn_bundle(TextBundle::from_section(
+        "hello",
+        TextStyle {
+            font_size: 30.0,
+            color: Color::WHITE,
+            ..default()
+        },
+    ));
 }
 
 /// Set turn state to None when we are not in gamplay
 fn remove_turn_state(mut commands: Commands) {
     commands.insert_resource(NextState(TurnState::None))
 }
-
-
