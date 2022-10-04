@@ -47,8 +47,66 @@ impl Default for EnemyBundle {
     }
 }
 
+/// Marker for a eye entity
+#[derive(Component)]
+struct EyeMarker;
+
+/// Describes where the eyes are, and how big they are.
+#[derive(Component, Default, Debug)]
+struct EyeSettings {
+    /// X of the center of the eye
+    offset_x: f32,
+    /// Y of the center corner of the eye
+    offset_y: f32,
+
+    /// How wide is the eye?
+    width: f32,
+    /// How high is the eye?
+    height: f32,
+}
+
+/// Eyes follow the mouse cursor!
+#[derive(Bundle)]
+struct EyesBundle {
+    /// Marker to identitfy this entity as an eye
+    _m: EyeMarker,
+
+    /// Contains a basic black square
+    #[bundle]
+    shape: ShapeBundle,
+
+    /// Settings for eye
+    settings: EyeSettings,
+}
+
+impl Default for EyesBundle {
+    fn default() -> Self {
+        Self {
+            _m: EyeMarker,
+            settings: EyeSettings::default(),
+            shape: GeometryBuilder::build_as(
+                &shapes::Rectangle {
+                    extents: Vec2::splat(crate::assets::ASSET_SCALE_UP),
+                    origin: RectangleOrigin::Center
+                },
+                DrawMode::Fill(FillMode::color(Color::BLACK)),
+                Transform::default(),
+            )
+        }
+    }
+}
+
+
+/// Describes a trait implenting the needed function for creating a enemy
+trait EnemyConstruction : Bundle{
+    /// Create the bundle with assets
+    fn with_assets(assets: &Handle<TextureAtlas>) -> Self;
+    /// Get eye settings for the eye enteties 
+    fn eye_settings() -> Vec<EyeSettings>;
+}
+
+
 /// Just for testing
 fn create_test_enemy(mut commands: Commands, assets: Res<crate::assets::EnemyAssets>) {
     commands.spawn_bundle(EnemySlime::with_assets(&assets.slime));
 }
-

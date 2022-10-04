@@ -12,9 +12,8 @@ pub struct EnemySlime {
     _enemy: EnemyBundle,
 }
 
-impl EnemySlime {
-    /// Create a default slime enemy with the specified texture atlas
-    pub fn with_assets(assets: &Handle<TextureAtlas>) -> Self {
+impl super::EnemyConstruction for EnemySlime {
+    fn with_assets(assets: &Handle<TextureAtlas>) -> Self {
         Self {
             _enemy: EnemyBundle {
                 _sprite: SpriteSheetBundle {
@@ -26,5 +25,9 @@ impl EnemySlime {
             },
             ..default()
         }
+    }
+
+    fn eye_settings() -> Vec<super::EyeSettings> {
+        vec![]
     }
 }
