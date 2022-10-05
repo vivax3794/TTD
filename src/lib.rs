@@ -14,7 +14,7 @@ mod camera_control;
 mod mouse_location;
 
 mod enemies;
-mod grid;
+mod ldtk_loader;
 
 #[cfg(debug_assertions)]
 mod debug_system;
@@ -26,12 +26,11 @@ use state::RemoveOnGameplayExit;
 use turns::{TurnPart, TurnState};
 
 use camera_control::MainCamera;
-use grid::GridLocation;
 
 use bevy::{prelude::*, winit::WinitSettings};
 
 /// Background color screen will be cleared with each frame.
-const BACK_GROUND_COLOR: Color = Color::BLACK;
+const BACK_GROUND_COLOR: Color = Color::DARK_GRAY;
 
 /// Main game plugin
 #[derive(Debug, Clone, Copy)]
@@ -54,11 +53,14 @@ impl Plugin for GamePlugin {
 
         // Plugins
         app.add_plugin(state::StatePlugin);
+        // Tilemap must be before assets since it registers a asset loader
+        app.add_plugin(ldtk_loader::LDtkMangerPlugin);
+        // Asset must be after state as it registers state systems.
         app.add_plugin(assets::AssetLoadingPlugin);
+
         app.add_plugin(turns::TurnPlugin);
         app.add_plugin(mouse_location::MouseWorldPlugin);
         app.add_plugin(camera_control::CameraPlugin);
-        app.add_plugin(grid::GridPlugin);
         app.add_plugin(enemies::EnemyPlugin);
 
         #[cfg(debug_assertions)]

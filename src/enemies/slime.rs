@@ -13,21 +13,18 @@ pub struct EnemySlime {
 }
 
 impl super::EnemyConstruction for EnemySlime {
-    fn with_assets(assets: &Handle<TextureAtlas>) -> Self {
-        Self {
-            _enemy: EnemyBundle {
-                _sprite: SpriteSheetBundle {
-                    texture_atlas: assets.clone(),
-                    transform: Transform::from_scale(Vec3::splat(crate::assets::ASSET_SCALE_UP)),
-                    ..default()
-                },
-                ..default()
-            },
-            ..default()
-        }
-    }
-
     fn eye_settings() -> Vec<super::EyeSettings> {
-        vec![]
+        vec![
+            super::EyeSettings {
+                offset: Vec2::new(-2.0, 3.0),
+                width: 2.0,
+                height: 2.0,
+            },
+            super::EyeSettings {
+                offset: Vec2::new(3.0, 3.0),
+                width: 2.0,
+                height: 2.0
+            }
+        ]
     }
 }

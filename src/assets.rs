@@ -5,10 +5,11 @@ use bevy_asset_loader::prelude::*;
 use iyes_loopless::prelude::*;
 use iyes_progress::prelude::*;
 
+/// Load assets
 pub struct AssetLoadingPlugin;
 
 /// How much should we scale stuff up?
-pub const ASSET_SCALE_UP: f32 = 5.0;
+pub const ASSET_SCALE_UP: f32 = 1.0;
 
 impl Plugin for AssetLoadingPlugin {
     fn build(&self, app: &mut App) {
@@ -16,7 +17,8 @@ impl Plugin for AssetLoadingPlugin {
 
         app.add_loading_state(
             LoadingState::new(crate::MainState::LoadingAssets)
-                .with_collection::<EnemyAssets>()
+                .with_collection::<GameAssets>()
+                .with_collection::<MiscAssets>()
                 .continue_to_state(crate::MainState::Playing)
         );
         // TODO: go to main menu
@@ -26,9 +28,16 @@ impl Plugin for AssetLoadingPlugin {
 
 /// Slime is best enemy
 #[derive(AssetCollection, Debug)]
-pub struct EnemyAssets {
-    /// Sprite sheet for slime
-    #[asset(texture_atlas(tile_size_x = 16., tile_size_y = 16., columns = 2, rows =1))]
-    #[asset(path = "Enemy/Slime.png")]
-    pub slime: Handle<TextureAtlas>,
+pub struct GameAssets {
+    /// Slime Enemy
+    #[asset(path = "Slime.png")]
+    pub slime: Handle<Image>,
+}
+
+/// misc assets
+#[derive(AssetCollection, Debug)]
+pub struct MiscAssets {
+    /// Tilemap
+    #[asset(path = "Level.ldtk")]
+    pub ldtk_source_file: Handle<bevy_ecs_ldtk::prelude::LdtkAsset>
 }
