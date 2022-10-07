@@ -6,6 +6,8 @@
 #![warn(missing_debug_implementations)]
 #![warn(clippy::missing_docs_in_private_items)]
 
+mod utils;
+
 mod assets;
 mod state;
 mod turns;

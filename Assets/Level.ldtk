@@ -466,8 +466,8 @@
 			"customData": [],
 			"savedSelections": [],
 			"cachedPixelData": {
-				"opaqueTiles": "1100111011001100100011101110",
-				"averageColors": "f463f66300000000f5abf5bdf6cd0000f5bdf6cd16cd0000fa85fa8500000000fa85000000000000f985f985f974e984f985f985f974e974"
+				"opaqueTiles": "1100111011001100100011111111",
+				"averageColors": "f463f66300000000f5abf5bdf6cd0000f5bdf6cd16cd0000fa85fa8500000000fa85000000000000f984f984f974f974f984f984f974f874"
 			}
 		}
 	], "enums": [], "externalEnums": [], "levelFields": [] },

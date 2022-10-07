@@ -70,17 +70,12 @@ impl Plugin for TurnPlugin {
 }
 
 /// When we enter gameplay set the inital turn part
-fn set_inital_turn_state(mut commands: Commands) {
+fn set_inital_turn_state(mut commands: Commands, assets: Res<crate::assets::MiscAssets>) {
     commands.insert_resource(NextState(TurnState::InTurn(TurnPart::EnemyTurnStart)));
 
-    // commands.spawn_bundle(TextBundle::from_section(
-    //     "hello",
-    //     TextStyle {
-    //         font_size: 30.0,
-    //         color: Color::WHITE,
-    //         ..default()
-    //     },
-    // ));
+    commands.spawn_bundle(ImageBundle {
+        image: assets.turn_icons
+    })
 }
 
 /// Set turn state to None when we are not in gamplay

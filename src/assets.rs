@@ -14,7 +14,7 @@ impl Plugin for AssetLoadingPlugin {
             LoadingState::new(crate::MainState::LoadingAssets)
                 .with_collection::<GameAssets>()
                 .with_collection::<MiscAssets>()
-                .continue_to_state(crate::MainState::Playing)
+                .continue_to_state(crate::MainState::Playing),
         );
         // TODO: go to main menu
         // app.add_plugin(ProgressPlugin::new(crate::MainState::LoadingAssets).continue_to(crate::MainState::Playing));
@@ -25,7 +25,7 @@ impl Plugin for AssetLoadingPlugin {
 #[derive(AssetCollection, Debug)]
 pub struct GameAssets {
     /// Slime Enemy
-    #[asset(path = "Slime.png")]
+    #[asset(path = "Enemies/Slime.png")]
     pub slime: Handle<Image>,
 }
 
@@ -34,5 +34,14 @@ pub struct GameAssets {
 pub struct MiscAssets {
     /// Tilemap
     #[asset(path = "Level.ldtk")]
-    pub ldtk_source_file: Handle<bevy_ecs_ldtk::prelude::LdtkAsset>
+    pub ldtk_source_file: Handle<bevy_ecs_ldtk::prelude::LdtkAsset>,
+
+    /// Font file
+    #[asset(path = "Font.ttf")]
+    pub font: Handle<Font>,
+
+    /// Turn icons
+    #[asset(texture_atlas(tile_size_x = 16., tile_size_y = 16., columns = 4, rows = 2))]
+    #[asset(path = "TurnIcons.png")]
+    pub turn_icons: Handle<TextureAtlas>
 }
