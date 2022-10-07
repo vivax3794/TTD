@@ -1,7 +1,6 @@
 //! Tracks and controls turn switching
 
-use bevy::{prelude::*, reflect::erased_serde::__private::serde::__private::de};
-use bevy_prototype_lyon::prelude::*;
+use bevy::prelude::*;
 use iyes_loopless::prelude::*;
 use iyes_progress::prelude::*;
 
@@ -44,8 +43,7 @@ pub struct TurnPlugin;
 impl Plugin for TurnPlugin {
     fn build(&self, app: &mut App) {
         // app.add_loopless_state(TurnState::None)
-        app
-            .add_enter_system(crate::MainState::Playing, set_inital_turn_state)
+        app.add_enter_system(crate::MainState::Playing, set_inital_turn_state)
             .add_exit_system(crate::MainState::Playing, remove_turn_state);
 
         use TurnPart::*;

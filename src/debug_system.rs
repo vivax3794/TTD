@@ -11,11 +11,12 @@ impl Plugin for DebugPlugin {
         app.add_plugin(EditorPlugin);
         app.add_plugin(FrameTimeDiagnosticsPlugin);
 
-        // app.add_system(log_state_changes);
+        app.add_system(log_state_changes);
     }
 }
 
 
+/// Log when states changes
 fn log_state_changes(main_state: Res<CurrentState<crate::MainState>>, turn_state: Res<CurrentState<crate::TurnState>>) {
     if main_state.is_changed() {
         dbg!(main_state.0);

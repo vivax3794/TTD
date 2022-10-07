@@ -1,6 +1,6 @@
 //! Controls enemy
 
-use bevy::{pbr::GlobalLightMeta, prelude::*};
+use bevy::prelude::*;
 use bevy_prototype_lyon::{entity::ShapeBundle, prelude::*};
 use iyes_loopless::prelude::*;
 

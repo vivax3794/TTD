@@ -1,15 +1,10 @@
-/// Loads game assets
+//! Loads game assets
+
 use bevy::prelude::*;
-use bevy::render::texture::ImageSettings;
 use bevy_asset_loader::prelude::*;
-use iyes_loopless::prelude::*;
-use iyes_progress::prelude::*;
 
 /// Load assets
 pub struct AssetLoadingPlugin;
-
-/// How much should we scale stuff up?
-pub const ASSET_SCALE_UP: f32 = 1.0;
 
 impl Plugin for AssetLoadingPlugin {
     fn build(&self, app: &mut App) {

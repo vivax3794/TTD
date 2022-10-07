@@ -1,3 +1,5 @@
+//! Load the game levels created in LDtk
+
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 use iyes_loopless::prelude::*;
@@ -7,7 +9,7 @@ pub struct LDtkMangerPlugin;
 impl Plugin for LDtkMangerPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugin(LdtkPlugin);
-        app.insert_resource(LevelSelection::Index(2));
+        app.insert_resource(LevelSelection::Index(1));
 
         app.add_enter_system(crate::MainState::Playing, setup_tilemap);
     }
