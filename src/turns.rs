@@ -73,14 +73,14 @@ impl Plugin for TurnPlugin {
 fn set_inital_turn_state(mut commands: Commands) {
     commands.insert_resource(NextState(TurnState::InTurn(TurnPart::EnemyTurnStart)));
 
-    commands.spawn_bundle(TextBundle::from_section(
-        "hello",
-        TextStyle {
-            font_size: 30.0,
-            color: Color::WHITE,
-            ..default()
-        },
-    ));
+    // commands.spawn_bundle(TextBundle::from_section(
+    //     "hello",
+    //     TextStyle {
+    //         font_size: 30.0,
+    //         color: Color::WHITE,
+    //         ..default()
+    //     },
+    // ));
 }
 
 /// Set turn state to None when we are not in gamplay

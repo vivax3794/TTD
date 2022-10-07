@@ -586,20 +586,6 @@
 									"params": ["11,3"]
 								}
 							] }]
-						},
-						{
-							"__identifier": "EnemySpawner",
-							"__grid": [3,14],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FF0000",
-							"iid": "05843d00-2a00-11ed-b4b1-f50b012688b1",
-							"width": 16,
-							"height": 16,
-							"defUid": 49,
-							"px": [56,232],
-							"fieldInstances": [{ "__identifier": "Path", "__value": [], "__type": "Array<Point>", "__tile": null, "defUid": 50, "realEditorValues": [] }]
 						}
 					]
 				},

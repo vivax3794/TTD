@@ -1,6 +1,7 @@
 //! Controls enemy
 
 use bevy::prelude::*;
+use bevy_ecs_ldtk::prelude::*;
 use bevy_prototype_lyon::{entity::ShapeBundle, prelude::*};
 use iyes_loopless::prelude::*;
 
@@ -12,7 +13,12 @@ pub use slime::EnemySlime;
 pub struct EnemyPlugin;
 impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut bevy::prelude::App) {
+        app.register_type::<EnemyPath>();
+
         app.add_system(move_eyes_to_cursor.run_in_state(crate::MainState::Playing));
+
+        app.add_system(mark_spawner_with_name);
+
         // app.add_system(make_eyes_scared.run_in_state(crate::MainState::Playing));
 
         // app.add_enter_system(crate::MainState::Playing, create_test_enemy);
@@ -168,3 +174,60 @@ fn move_eyes_to_cursor(
 
 //     })
 // }
+
+/// The path for enemies to follow!
+#[derive(Clone, Debug, Component)]
+struct EnemyPath(Vec<(i32, i32)>);
+
+impl From<EntityInstance> for EnemyPath {
+    fn from(instance: EntityInstance) -> Self {
+        let mut path = Vec::new();
+        for field in instance.field_instances {
+            if field.identifier == "Path" {
+                if let FieldValue::Points(points) = field.value {
+                    path = points
+                        .into_iter()
+                        .filter_map(|point| point.map(|p| (p.x, p.y)))
+                        .collect();
+                    break;
+                }
+            }
+        }
+
+        EnemyPath(path)
+    }
+}
+
+/// Mark the enemy spawners
+#[derive(Reflect, Copy, Clone, Default, Component, Debug)]
+#[reflect(Component)]
+pub struct EnemySpawner;
+
+/// Spawn enemies on a timer
+#[derive(Bundle, Debug, LdtkEntity)]
+pub struct EnemySpawnerBundle {
+    /// Make this entity easier to find in the editor
+    _n: Name,
+
+    /// Mark this entity as a enemy spawner
+    _m: EnemySpawner,
+
+    /// Give this bundle all the needed components to exsist in the world
+    #[bundle]
+    _s: SpatialBundle,
+
+    /// The path spawned enemies should take
+    #[from_entity_instance]
+    path: EnemyPath,
+
+    /// What location in the grid are you on?
+    #[grid_coords]
+    position: GridCoords
+}
+
+/// Make sure spawners have a name so we can find them again!
+fn mark_spawner_with_name(mut query: Query<&mut Name, Added<EnemySpawner>>) {
+    query.for_each_mut(|mut name| {
+        name.set("EnemySpawner");
+    });
+}
