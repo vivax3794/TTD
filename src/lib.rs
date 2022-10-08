@@ -6,13 +6,17 @@
 #![warn(missing_debug_implementations)]
 #![warn(clippy::missing_docs_in_private_items)]
 
+use bevy::{prelude::*, winit::WinitSettings};
+use bevy::render::texture::ImageSettings;
+use bevy_mod_ui_texture_atlas_image::UiAtlasImagePlugin;
+
 mod utils;
 
 mod assets;
 mod state;
 mod turns;
 
-mod camera_control;
+mod camera;
 mod mouse_location;
 
 mod enemies;
@@ -21,15 +25,13 @@ mod ldtk_loader;
 #[cfg(debug_assertions)]
 mod debug_system;
 
-use bevy::render::texture::ImageSettings;
 use iyes_loopless::prelude::AppLooplessStateExt;
 use state::Main as MainState;
 use state::RemoveOnGameplayExit;
 use turns::{TurnPart, TurnState};
 
-use camera_control::MainCamera;
+use camera::MainCamera;
 
-use bevy::{prelude::*, winit::WinitSettings};
 
 /// Background color screen will be cleared with each frame.
 const BACK_GROUND_COLOR: Color = Color::DARK_GRAY;
@@ -49,6 +51,7 @@ impl Plugin for GamePlugin {
             .insert_resource(ClearColor(BACK_GROUND_COLOR));
 
         app.add_plugin(bevy_prototype_lyon::prelude::ShapePlugin);
+        app.add_plugin(UiAtlasImagePlugin);
 
         app.add_loopless_state(MainState::LoadingAssets);
         app.add_loopless_state(TurnState::None);
@@ -62,7 +65,7 @@ impl Plugin for GamePlugin {
 
         app.add_plugin(turns::TurnPlugin);
         app.add_plugin(mouse_location::MouseWorldPlugin);
-        app.add_plugin(camera_control::CameraPlugin);
+        app.add_plugin(camera::CameraPlugin);
         app.add_plugin(enemies::EnemyPlugin);
 
         #[cfg(debug_assertions)]

@@ -8,7 +8,7 @@ use iyes_loopless::state::CurrentState;
 pub struct DebugPlugin;
 impl Plugin for DebugPlugin {
     fn build(&self, app: &mut App) {
-        // app.add_plugin(EditorPlugin);
+        app.add_plugin(EditorPlugin);
         app.add_plugin(FrameTimeDiagnosticsPlugin);
 
         // app.add_system(log_state_changes);

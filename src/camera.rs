@@ -12,11 +12,10 @@ pub struct CameraPlugin;
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(create_camera);
+        // app.add_enter_system(crate::MainState::Playing, fit_map_to_camera);
         app.add_system(fit_map_to_camera.run_in_state(crate::MainState::Playing));
     }
 }
-
-// TODO: We assume maps are 256x256 px atm, look into dynamic sizes later
 
 /// Create a 2d camera to render scenes
 fn create_camera(mut commands: Commands) {
@@ -32,6 +31,9 @@ fn create_camera(mut commands: Commands) {
         .insert(MainCamera);
 }
 
+/// Space at the bottom for ui information!
+const BOTTOM_PADDING: f32 = 16.;
+
 /// Scale camera so map is always at the edges
 fn fit_map_to_camera(
     windows: Res<Windows>,
@@ -42,7 +44,7 @@ fn fit_map_to_camera(
 ) {
     if current_level.is_changed() || windows.is_changed() {
         let primary_window = windows.get_primary().unwrap();
-        let window_height = primary_window.height();
+        let window_height = primary_window.height(); // - BOTTOM_PADDING * 4.;
         let window_width = primary_window.width();
 
         let world_data = asset_store.get(&assets.ldtk_source_file).unwrap();
@@ -54,7 +56,7 @@ fn fit_map_to_camera(
 
         // center camera
         trans.translation.x = level_width / 2.;
-        trans.translation.y = level_height / 2.;
+        trans.translation.y = level_height / 2.; // - BOTTOM_PADDING;
 
         // Scale Camera 
         let height_scale = level_height / window_height;
