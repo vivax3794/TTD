@@ -197,6 +197,8 @@ impl From<EntityInstance> for EnemyPath {
     }
 }
 
+
+
 /// Mark the enemy spawners
 #[derive(Debug, Default, Component)]
 pub struct EnemySpawner;
@@ -220,5 +222,5 @@ pub struct EnemySpawnerBundle {
 
     /// What location in the grid are you on?
     #[grid_coords]
-    position: GridCoords
+    position: GridCoords,
 }
