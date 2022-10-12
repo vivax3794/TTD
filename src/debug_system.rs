@@ -1,5 +1,7 @@
 //! Used if debugging
 
+#![allow(unused)]
+
 use bevy::{prelude::*, diagnostic::FrameTimeDiagnosticsPlugin};
 use bevy_editor_pls::prelude::*;
 use iyes_loopless::state::CurrentState;

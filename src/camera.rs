@@ -31,8 +31,6 @@ fn create_camera(mut commands: Commands) {
         .insert(MainCamera);
 }
 
-/// Space at the bottom for ui information!
-const BOTTOM_PADDING: f32 = 16.;
 
 /// Scale camera so map is always at the edges
 fn fit_map_to_camera(

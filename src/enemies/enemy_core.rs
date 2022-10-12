@@ -1,4 +1,4 @@
-//! Controls enemy
+//! Core enemy logic and bundles
 
 use std::time::Duration;
 
@@ -6,42 +6,14 @@ use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 use bevy_tweening::lens::{TransformPositionLens, TransformScaleLens};
 use bevy_tweening::{Animator, EaseFunction, Tween, TweeningType};
-use iyes_loopless::prelude::*;
-use iyes_progress::prelude::*;
 
-use super::enemy_eyes::{move_eyes_to_cursor, EyesBundle};
+use super::enemy_eyes::EyesBundle;
 use super::enemy_types::EnemyType;
 
-use crate::{TurnPart, TurnState};
-
-/// Enemy plugin
-pub struct EnemyPlugin;
-impl Plugin for EnemyPlugin {
-    fn build(&self, app: &mut bevy::prelude::App) {
-        app.register_type::<EnemyPath>();
-
-        app.add_system(move_eyes_to_cursor.run_in_state(crate::MainState::Playing));
-
-        app.add_system(crate::utils::give_entity_name::<EnemySpawner>(
-            "EnemySpanwer".to_owned(),
-        ));
-        app.add_system(
-            crate::utils::is_animation_done::<Transform>
-                .track_progress()
-                .run_in_state(crate::MainState::Playing),
-        );
-
-        // app.add_system(make_eyes_scared.run_in_state(crate::MainState::Playing));
-
-        // TURN SYSTEMS
-        app.add_enter_system(TurnState::InTurn(TurnPart::EnemySpawn), spawn_enemies);
-        app.add_enter_system(TurnState::InTurn(TurnPart::EnemyMove), move_enemies);
-    }
-}
 /// The path for enemies to follow!
 #[derive(Reflect, Default, Clone, Debug, Component)]
 #[reflect(Component)]
-struct EnemyPath(Vec<(i32, i32)>);
+pub struct EnemyPath(Vec<(i32, i32)>);
 
 /// All enmies will have this components
 #[derive(Component, Default)]
@@ -62,6 +34,7 @@ pub struct EnemyBundle {
     /// Path enemy needs to take
     path: EnemyPath,
 
+    /// Location of enemy in grid, updated by move system
     grid_location: GridCoords,
 }
 
@@ -99,7 +72,7 @@ impl From<EntityInstance> for EnemyPath {
 
 /// Spawner order of enemies
 #[derive(Default, Clone, Debug, Component)]
-struct EnemyWaveSpecification(usize, Vec<Option<EnemyType>>);
+pub struct EnemyWaveSpecification(usize, Vec<Option<EnemyType>>);
 
 impl From<EntityInstance> for EnemyWaveSpecification {
     fn from(entity: EntityInstance) -> Self {
@@ -152,7 +125,7 @@ pub struct EnemySpawnerBundle {
 }
 
 /// Spawn enemies when it is time
-fn spawn_enemies(
+pub fn spawn_enemies(
     mut commands: Commands,
     mut query: Query<
         (
@@ -210,7 +183,7 @@ fn spawn_enemies(
 }
 
 /// Move enemies to next location
-fn move_enemies(
+pub fn move_enemies(
     mut commands: Commands,
     mut query: Query<(Entity, &Transform, &mut EnemyPath, &mut GridCoords), With<EnemyMarker>>,
 ) {
@@ -220,14 +193,12 @@ fn move_enemies(
 
             let next_point = path.0.last().unwrap();
 
-            let direction = (
-                (next_point.0 - grid_loc.x),
-                (next_point.1 - grid_loc.y),
-            );
+            let direction = ((next_point.0 - grid_loc.x), (next_point.1 - grid_loc.y));
 
             // dbg!(*grid_loc, next_point, direction);
 
-            let movement_vector = Vec2::new(direction.0 as f32, direction.1 as f32).normalize() * 16.;
+            let movement_vector =
+                Vec2::new(direction.0 as f32, direction.1 as f32).normalize() * 16.;
             let next_location = pos + movement_vector.extend(0.0);
 
             let tween = Tween::new(

@@ -1,6 +1,8 @@
+//! Utility systems like for example renaming entites based on components,
+
 use bevy::prelude::*;
 
-use bevy_tweening::{Animator, AnimatorState};
+use bevy_tweening::Animator;
 use iyes_progress::Progress;
 
 /// Create a system that can set the name of entites
