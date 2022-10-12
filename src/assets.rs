@@ -12,7 +12,7 @@ impl Plugin for AssetLoadingPlugin {
 
         app.add_loading_state(
             LoadingState::new(crate::MainState::LoadingAssets)
-                .with_collection::<GameAssets>()
+                .with_collection::<EnemyAssets>()
                 .with_collection::<MiscAssets>()
                 .continue_to_state(crate::MainState::Playing),
         );
@@ -21,9 +21,9 @@ impl Plugin for AssetLoadingPlugin {
     }
 }
 
-/// Slime is best enemy
+/// Assets for enemies
 #[derive(AssetCollection, Debug)]
-pub struct GameAssets {
+pub struct EnemyAssets {
     /// Slime Enemy
     #[asset(path = "Enemies/Slime.png")]
     pub slime: Handle<Image>,

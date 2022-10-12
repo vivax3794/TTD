@@ -52,20 +52,24 @@ impl Plugin for GamePlugin {
 
         app.add_plugin(bevy_prototype_lyon::prelude::ShapePlugin);
         app.add_plugin(UiAtlasImagePlugin);
+        app.add_plugin(bevy_tweening::TweeningPlugin);
 
         app.add_loopless_state(MainState::LoadingAssets);
         app.add_loopless_state(TurnState::None);
 
         // Plugins
         app.add_plugin(state::StatePlugin);
+        app.add_plugin(turns::TurnPlugin);
         // Tilemap must be before assets since it registers a asset loader
         app.add_plugin(ldtk_loader::LDtkMangerPlugin);
+
         // Asset must be after state as it registers state systems.
         app.add_plugin(assets::AssetLoadingPlugin);
 
-        app.add_plugin(turns::TurnPlugin);
         app.add_plugin(mouse_location::MouseWorldPlugin);
         app.add_plugin(camera::CameraPlugin);
+
+        // Gameplay plugins
         app.add_plugin(enemies::EnemyPlugin);
 
         #[cfg(debug_assertions)]

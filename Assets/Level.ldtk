@@ -567,7 +567,7 @@
 							"__tags": [],
 							"__tile": null,
 							"__smartColor": "#FF0000",
-							"iid": "ea260340-2a00-11ed-b4b1-cd823cbab7ae",
+							"iid": "ba2d2530-2a00-11ed-a18b-b7266f4b3e58",
 							"width": 16,
 							"height": 16,
 							"defUid": 49,
@@ -620,9 +620,12 @@
 									"Slime",
 									"Slime",
 									null,
-									null,
+									"Slime",
 									null,
 									"Slime",
+									"Slime",
+									"Slime",
+									null,
 									"Slime"
 								], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [
 									{
@@ -634,12 +637,24 @@
 										"params": ["Slime"]
 									},
 									null,
-									null,
+									{
+										"id": "V_String",
+										"params": ["Slime"]
+									},
 									null,
 									{
 										"id": "V_String",
 										"params": ["Slime"]
 									},
+									{
+										"id": "V_String",
+										"params": ["Slime"]
+									},
+									{
+										"id": "V_String",
+										"params": ["Slime"]
+									},
+									null,
 									{
 										"id": "V_String",
 										"params": ["Slime"]
@@ -1083,7 +1098,35 @@
 										"params": ["1,3"]
 									}
 								] },
-								{ "__identifier": "EnemyType", "__value": [], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [] }
+								{ "__identifier": "EnemyType", "__value": [
+									null,
+									"Slime",
+									null,
+									"Slime",
+									null,
+									"Slime",
+									"Slime"
+								], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [
+									null,
+									{
+										"id": "V_String",
+										"params": ["Slime"]
+									},
+									null,
+									{
+										"id": "V_String",
+										"params": ["Slime"]
+									},
+									null,
+									{
+										"id": "V_String",
+										"params": ["Slime"]
+									},
+									{
+										"id": "V_String",
+										"params": ["Slime"]
+									}
+								] }
 							]
 						},
 						{
@@ -1137,7 +1180,35 @@
 										"params": ["10,4"]
 									}
 								] },
-								{ "__identifier": "EnemyType", "__value": [], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [] }
+								{ "__identifier": "EnemyType", "__value": [
+									"Slime",
+									null,
+									"Slime",
+									null,
+									"Slime",
+									null,
+									"Slime"
+								], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [
+									{
+										"id": "V_String",
+										"params": ["Slime"]
+									},
+									null,
+									{
+										"id": "V_String",
+										"params": ["Slime"]
+									},
+									null,
+									{
+										"id": "V_String",
+										"params": ["Slime"]
+									},
+									null,
+									{
+										"id": "V_String",
+										"params": ["Slime"]
+									}
+								] }
 							]
 						}
 					]

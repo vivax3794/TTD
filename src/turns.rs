@@ -134,7 +134,7 @@ fn set_turn_icon(
 /// Make turn be at least 100 ms
 fn make_sure_turn_is_long_enough(global_timer: Res<Time>, mut timer: Local<Timer>, state: Res<CurrentState<TurnState>>) -> Progress {
     if state.is_changed() {
-        *timer = Timer::new(Duration::from_millis(300), true);
+        *timer = Timer::new(Duration::from_millis(50), true);
     }
 
     timer.tick(global_timer.delta()).finished().into()
