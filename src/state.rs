@@ -44,5 +44,5 @@ pub struct RemoveOnGameplayExit;
 /// Remove entities marked as gameplay only when we exit the gameplay state
 fn leave_game_state(mut commands: Commands, query: Query<Entity, With<RemoveOnGameplayExit>>) {
     query.for_each(|entity| commands.entity(entity).despawn_recursive());
-    commands.remove_resource::<IsPaused>()
+    commands.remove_resource::<IsPaused>();
 }

@@ -1,10 +1,10 @@
-//! Load the game levels created in LDtk
+//! Load the game levels created in `LDtk`
 
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 use iyes_loopless::prelude::*;
 
-/// Loads an managed LDtk level files
+/// Loads an managed `LDtk` level files
 pub struct LDtkMangerPlugin;
 impl Plugin for LDtkMangerPlugin {
     fn build(&self, app: &mut App) {

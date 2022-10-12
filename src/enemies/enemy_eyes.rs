@@ -97,7 +97,7 @@ pub fn move_eyes_to_cursor(
         let look_offest = Vec2::new(x_offset, y_offset);
         // Set Z-Index to 11, since enemies are on Z = 10.
         trans.translation = (settings.offset + look_offest).extend(11.0);
-    })
+    });
 }
 
 // TODO: Make this work with the new tilemap system

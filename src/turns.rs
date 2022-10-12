@@ -49,17 +49,16 @@ impl Plugin for TurnPlugin {
         app.add_system(set_turn_icon.run_in_state(crate::MainState::Playing));
         app.add_system(make_sure_turn_is_long_enough.track_progress().run_in_state(crate::MainState::Playing));
 
-        use TurnPart::*;
         let turn_order = [
-            EnemyTurnStart,
-            EnemySpawn,
-            EnemyMove,
-            EnemyTurnEnd,
-            PlayerTurnStart,
-            PlayerAction,
-            PlayerAttack,
-            PlayerTurnEnd,
-            EnemyTurnStart,
+            TurnPart::EnemyTurnStart,
+            TurnPart::EnemySpawn,
+            TurnPart::EnemyMove,
+            TurnPart::EnemyTurnEnd,
+            TurnPart::PlayerTurnStart,
+            TurnPart::PlayerAction,
+            TurnPart::PlayerAttack,
+            TurnPart::PlayerTurnEnd,
+            TurnPart::EnemyTurnStart,
         ];
         for (&from, &to) in turn_order.iter().zip(turn_order.iter().skip(1)) {
             app.add_plugin(
@@ -100,7 +99,7 @@ fn set_inital_turn_state(mut commands: Commands, assets: Res<crate::assets::Misc
 
 /// Set turn state to None when we are not in gamplay
 fn remove_turn_state(mut commands: Commands) {
-    commands.insert_resource(NextState(TurnState::None))
+    commands.insert_resource(NextState(TurnState::None));
 }
 
 /// Set turn icon
@@ -112,16 +111,15 @@ fn set_turn_icon(
         let img_index = match current_state.0 {
             TurnState::None => 0,
             TurnState::InTurn(part) => {
-                use TurnPart::*;
                 match part {
-                    EnemyTurnStart => 4,
-                    EnemySpawn => 0,
-                    EnemyMove => 1,
-                    EnemyTurnEnd => 5,
-                    PlayerTurnStart => 6,
-                    PlayerAction => 2,
-                    PlayerAttack => 3,
-                    PlayerTurnEnd => 7,
+                    TurnPart::EnemyTurnStart => 4,
+                    TurnPart::EnemySpawn => 0,
+                    TurnPart::EnemyMove => 1,
+                    TurnPart::EnemyTurnEnd => 5,
+                    TurnPart::PlayerTurnStart => 6,
+                    TurnPart::PlayerAction => 2,
+                    TurnPart::PlayerAttack => 3,
+                    TurnPart::PlayerTurnEnd => 7,
                 }
             }
         };

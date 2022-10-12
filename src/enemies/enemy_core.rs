@@ -58,7 +58,7 @@ impl From<EntityInstance> for EnemyPath {
                 if let FieldValue::Points(points) = field.value {
                     path = points
                         .into_iter()
-                        .filter_map(|point| point.map(|p| (p.x, 15 - p.y)))
+                        .filter_map(|point| point.map(|p| (p.x, p.y)))
                         .rev()
                         .collect();
                     break;
@@ -85,7 +85,7 @@ impl From<EntityInstance> for EnemyWaveSpecification {
                         enums_string
                             .into_iter()
                             .map(|val| val.map(|val| EnemyType::from(val.as_ref()))),
-                    )
+                    );
                 }
             }
         }
@@ -179,7 +179,7 @@ pub fn spawn_enemies(
                 )));
         }
         waves.0 += 1;
-    })
+    });
 }
 
 /// Move enemies to next location
@@ -195,7 +195,7 @@ pub fn move_enemies(
 
             let direction = ((next_point.0 - grid_loc.x), (next_point.1 - grid_loc.y));
 
-            // dbg!(*grid_loc, next_point, direction);
+            dbg!(*grid_loc, next_point, direction);
 
             let movement_vector =
                 Vec2::new(direction.0 as f32, direction.1 as f32).normalize() * 16.;

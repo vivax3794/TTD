@@ -10,7 +10,7 @@ pub fn give_entity_name<C: Component>(new_name: String) -> impl FnMut(Query<&mut
     move |mut query| {
         query.for_each_mut(|mut name| {
             name.set(new_name.clone());
-        })
+        });
     }
 }
 
@@ -26,5 +26,5 @@ pub fn is_animation_done<T: Component>(
         total += 100;
     }
 
-    Progress { total, done }
+    Progress { done, total }
 }

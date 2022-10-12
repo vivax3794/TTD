@@ -23,7 +23,7 @@ impl From<&str> for EnemyType {
 
 impl EnemyType {
     /// how to construct eyes
-    pub fn eye_settings(&self) -> Vec<EyeSettings> {
+    pub fn eye_settings(self) -> Vec<EyeSettings> {
         match self {
             Self::Slime => vec![
                 EyeSettings {
@@ -41,7 +41,7 @@ impl EnemyType {
     }
 
     /// what img asset should be used for this enemy?
-    pub fn enemy_asset(&self, assets: &crate::assets::EnemyAssets) -> Handle<Image> {
+    pub fn enemy_asset(self, assets: &crate::assets::EnemyAssets) -> Handle<Image> {
         match self {
             Self::Slime => assets.slime.clone_weak()
         }
