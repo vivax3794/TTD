@@ -38,8 +38,9 @@ fn update_world_position(
     if let Some(screen_pos) = window.cursor_position() {
         let window_size = Vec2::new(window.width() as f32, window.height() as f32);
         let gpu_space = (screen_pos / window_size) * 2.0 - Vec2::ONE;
-        let gpu_to_world_matrix = camera_transform.compute_matrix() * camera.projection_matrix().inverse();
-        
+        let gpu_to_world_matrix =
+            camera_transform.compute_matrix() * camera.projection_matrix().inverse();
+
         let world_pos = gpu_to_world_matrix.project_point3(gpu_space.extend(0.0));
         let world_pos = world_pos.truncate();
 

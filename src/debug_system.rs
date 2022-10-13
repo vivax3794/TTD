@@ -2,7 +2,7 @@
 
 #![allow(unused)]
 
-use bevy::{prelude::*, diagnostic::FrameTimeDiagnosticsPlugin};
+use bevy::{diagnostic::FrameTimeDiagnosticsPlugin, prelude::*};
 use bevy_editor_pls::prelude::*;
 use iyes_loopless::state::CurrentState;
 
@@ -17,9 +17,11 @@ impl Plugin for DebugPlugin {
     }
 }
 
-
 /// Log when states changes
-fn log_state_changes(main_state: Res<CurrentState<crate::MainState>>, turn_state: Res<CurrentState<crate::TurnState>>) {
+fn log_state_changes(
+    main_state: Res<CurrentState<crate::MainState>>,
+    turn_state: Res<CurrentState<crate::TurnState>>,
+) {
     if main_state.is_changed() {
         dbg!(main_state.0);
     }

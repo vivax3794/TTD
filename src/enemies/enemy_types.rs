@@ -1,7 +1,7 @@
 //! Define settings and beheaviour of different enemy types
 
-use bevy::prelude::*;
 use super::enemy_eyes::EyeSettings;
+use bevy::prelude::*;
 
 /// Enemy Types
 #[derive(Debug, Clone, Copy)]
@@ -9,6 +9,10 @@ pub enum EnemyType {
     /// Most basic enemy, the slime!
     Slime,
 }
+
+// NOTE: should we be using `TryFrom` instead since we can clearly fail?
+// But on the other hand this conversion should never fail in working code, so we might just want to leave the panic in?
+// Since a invalid value will mean there is a error in our program somewhere!
 
 impl From<&str> for EnemyType {
     fn from(name: &str) -> Self {
@@ -18,6 +22,20 @@ impl From<&str> for EnemyType {
             // So a unknown string means there is a type somewhere
             _ => panic!("unknown enemy variant: {}", name),
         }
+    }
+}
+
+impl From<String> for EnemyType {
+    fn from(name: String) -> Self {
+        let reference: &str = name.as_ref();
+        reference.into()
+    }
+}
+
+impl From<&String> for EnemyType {
+    fn from(name: &String) -> Self {
+        let reference: &str = name.as_ref();
+        reference.into()
     }
 }
 
@@ -43,7 +61,7 @@ impl EnemyType {
     /// what img asset should be used for this enemy?
     pub fn enemy_asset(self, assets: &crate::assets::EnemyAssets) -> Handle<Image> {
         match self {
-            Self::Slime => assets.slime.clone_weak()
+            Self::Slime => assets.slime.clone_weak(),
         }
     }
 }

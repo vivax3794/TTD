@@ -47,7 +47,11 @@ impl Plugin for TurnPlugin {
         app.add_enter_system(crate::MainState::Playing, set_inital_turn_state)
             .add_exit_system(crate::MainState::Playing, remove_turn_state);
         app.add_system(set_turn_icon.run_in_state(crate::MainState::Playing));
-        app.add_system(make_sure_turn_is_long_enough.track_progress().run_in_state(crate::MainState::Playing));
+        app.add_system(
+            make_sure_turn_is_long_enough
+                .track_progress()
+                .run_in_state(crate::MainState::Playing),
+        );
 
         let turn_order = [
             TurnPart::EnemyTurnStart,
@@ -110,18 +114,16 @@ fn set_turn_icon(
     if current_state.is_changed() {
         let img_index = match current_state.0 {
             TurnState::None => 0,
-            TurnState::InTurn(part) => {
-                match part {
-                    TurnPart::EnemyTurnStart => 4,
-                    TurnPart::EnemySpawn => 0,
-                    TurnPart::EnemyMove => 1,
-                    TurnPart::EnemyTurnEnd => 5,
-                    TurnPart::PlayerTurnStart => 6,
-                    TurnPart::PlayerAction => 2,
-                    TurnPart::PlayerAttack => 3,
-                    TurnPart::PlayerTurnEnd => 7,
-                }
-            }
+            TurnState::InTurn(part) => match part {
+                TurnPart::EnemyTurnStart => 4,
+                TurnPart::EnemySpawn => 0,
+                TurnPart::EnemyMove => 1,
+                TurnPart::EnemyTurnEnd => 5,
+                TurnPart::PlayerTurnStart => 6,
+                TurnPart::PlayerAction => 2,
+                TurnPart::PlayerAttack => 3,
+                TurnPart::PlayerTurnEnd => 7,
+            },
         };
 
         let mut ui_atlas = query.single_mut();
@@ -130,7 +132,11 @@ fn set_turn_icon(
 }
 
 /// Make turn be at least 100 ms
-fn make_sure_turn_is_long_enough(global_timer: Res<Time>, mut timer: Local<Timer>, state: Res<CurrentState<TurnState>>) -> Progress {
+fn make_sure_turn_is_long_enough(
+    global_timer: Res<Time>,
+    mut timer: Local<Timer>,
+    state: Res<CurrentState<TurnState>>,
+) -> Progress {
     if state.is_changed() {
         *timer = Timer::new(Duration::from_millis(50), true);
     }

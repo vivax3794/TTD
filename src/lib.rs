@@ -23,6 +23,7 @@ use bevy::{prelude::*, winit::WinitSettings};
 use bevy_mod_ui_texture_atlas_image::UiAtlasImagePlugin;
 use iyes_loopless::prelude::AppLooplessStateExt;
 
+#[macro_use]
 mod utils;
 
 mod assets;

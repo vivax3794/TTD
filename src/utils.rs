@@ -1,7 +1,7 @@
 //! Utility systems like for example renaming entites based on components,
 
 use bevy::prelude::*;
-
+use bevy_ecs_ldtk::prelude::*;
 use bevy_tweening::Animator;
 use iyes_progress::Progress;
 
@@ -27,4 +27,26 @@ pub fn is_animation_done<T: Component>(
     }
 
     Progress { done, total }
+}
+
+/// Get a field from a entity!
+pub fn get_field<'a>(entity: &'a EntityInstance, field_name: &str) -> &'a FieldValue {
+    for field in &entity.field_instances {
+        if field.identifier == field_name {
+            return &field.value;
+        }
+    }
+
+    panic!("could not find field value with name {}", field_name);
+}
+
+/// extracts a value from a pattern, panicing if it doesnt match
+macro_rules! extract {
+    ($source:expr, $pattern:pat => $result:expr) => {{
+        let val = $source;
+        match val {
+            $pattern => $result,
+            _ => panic!("Pattern did not match in extract!({:?}, ...)", val),
+        }
+    }};
 }

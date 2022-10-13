@@ -31,7 +31,6 @@ fn create_camera(mut commands: Commands) {
         .insert(MainCamera);
 }
 
-
 /// Scale camera so map is always at the edges
 fn fit_map_to_camera(
     windows: Res<Windows>,
@@ -56,7 +55,7 @@ fn fit_map_to_camera(
         trans.translation.x = level_width / 2.;
         trans.translation.y = level_height / 2.; // - BOTTOM_PADDING;
 
-        // Scale Camera 
+        // Scale Camera
         let height_scale = level_height / window_height;
         let width_scale = level_width / window_width;
         let scale = f32::max(height_scale, width_scale);

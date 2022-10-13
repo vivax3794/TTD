@@ -43,5 +43,5 @@ pub struct MiscAssets {
     /// Turn icons
     #[asset(texture_atlas(tile_size_x = 16., tile_size_y = 16., columns = 4, rows = 2))]
     #[asset(path = "TurnIcons.png")]
-    pub turn_icons: Handle<TextureAtlas>
+    pub turn_icons: Handle<TextureAtlas>,
 }

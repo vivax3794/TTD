@@ -1,4 +1,4 @@
-//! Core enemy logic and bundles
+//! Enemy sytems control enemy behaviour!
 
 use std::time::Duration;
 
@@ -7,122 +7,10 @@ use bevy_ecs_ldtk::prelude::*;
 use bevy_tweening::lens::{TransformPositionLens, TransformScaleLens};
 use bevy_tweening::{Animator, EaseFunction, Tween, TweeningType};
 
+use super::enemy_components::{
+    EnemyBundle, EnemyMarker, EnemyPath, EnemySpawner, EnemyWaves,
+};
 use super::enemy_eyes::EyesBundle;
-use super::enemy_types::EnemyType;
-
-/// The path for enemies to follow!
-#[derive(Reflect, Default, Clone, Debug, Component)]
-#[reflect(Component)]
-pub struct EnemyPath(Vec<(i32, i32)>);
-
-/// All enmies will have this components
-#[derive(Component, Default)]
-pub struct EnemyMarker;
-
-/// Bundle containing everything a enemy will need
-#[derive(Bundle)]
-pub struct EnemyBundle {
-    /// Marker so we know this is a enemy
-    _m: EnemyMarker,
-    /// Make us be able to reconise an enemy!
-    _name: Name,
-
-    /// Holds dynamic vector art
-    #[bundle]
-    _sprite: SpriteBundle,
-
-    /// Path enemy needs to take
-    path: EnemyPath,
-
-    /// Location of enemy in grid, updated by move system
-    grid_location: GridCoords,
-}
-
-impl Default for EnemyBundle {
-    fn default() -> Self {
-        Self {
-            _m: EnemyMarker,
-            _name: Name::new("Enemy"),
-            _sprite: SpriteBundle::default(),
-            path: EnemyPath(Vec::new()),
-            grid_location: GridCoords::default(),
-        }
-    }
-}
-
-impl From<EntityInstance> for EnemyPath {
-    fn from(instance: EntityInstance) -> Self {
-        let mut path = Vec::new();
-        for field in instance.field_instances {
-            if field.identifier == "Path" {
-                if let FieldValue::Points(points) = field.value {
-                    path = points
-                        .into_iter()
-                        .filter_map(|point| point.map(|p| (p.x, p.y)))
-                        .rev()
-                        .collect();
-                    break;
-                }
-            }
-        }
-
-        EnemyPath(path)
-    }
-}
-
-/// Spawner order of enemies
-#[derive(Default, Clone, Debug, Component)]
-pub struct EnemyWaveSpecification(usize, Vec<Option<EnemyType>>);
-
-impl From<EntityInstance> for EnemyWaveSpecification {
-    fn from(entity: EntityInstance) -> Self {
-        let mut waves = Vec::new();
-
-        for field in entity.field_instances {
-            if field.identifier == "EnemyType" {
-                if let FieldValue::Enums(enums_string) = field.value {
-                    waves.extend(
-                        enums_string
-                            .into_iter()
-                            .map(|val| val.map(|val| EnemyType::from(val.as_ref()))),
-                    );
-                }
-            }
-        }
-
-        Self(0, waves)
-    }
-}
-
-/// Mark the enemy spawners
-#[derive(Debug, Default, Component)]
-pub struct EnemySpawner;
-
-/// Spawn enemies on a timer
-#[derive(Bundle, Debug, LdtkEntity)]
-pub struct EnemySpawnerBundle {
-    /// Make this entity easier to find in the editor
-    _n: Name,
-
-    /// Mark this entity as a enemy spawner
-    _m: EnemySpawner,
-
-    /// Give this bundle all the needed components to exsist in the world
-    #[bundle]
-    _s: SpatialBundle,
-
-    /// The path spawned enemies should take
-    #[from_entity_instance]
-    path: EnemyPath,
-
-    /// Waves to spawn
-    #[from_entity_instance]
-    wave: EnemyWaveSpecification,
-
-    /// What location in the grid are you on?
-    #[grid_coords]
-    position: GridCoords,
-}
 
 /// Spawn enemies when it is time
 pub fn spawn_enemies(
@@ -130,7 +18,7 @@ pub fn spawn_enemies(
     mut query: Query<
         (
             &Transform,
-            &mut EnemyWaveSpecification,
+            &mut EnemyWaves,
             &EnemyPath,
             &GridCoords,
         ),
@@ -193,7 +81,7 @@ pub fn move_enemies(
 
             let next_point = path.0.last().unwrap();
 
-            let direction = ((next_point.0 - grid_loc.x), (next_point.1 - grid_loc.y));
+            let direction = ((next_point.x - grid_loc.x), (next_point.y - grid_loc.y));
 
             dbg!(*grid_loc, next_point, direction);
 
@@ -218,7 +106,7 @@ pub fn move_enemies(
 
             // dbg!(*grid_loc, next_point);
 
-            if grid_loc.x == next_point.0 && grid_loc.y == next_point.1 {
+            if grid_loc.x == next_point.x && grid_loc.y == next_point.y {
                 path.0.pop().unwrap();
             }
         }

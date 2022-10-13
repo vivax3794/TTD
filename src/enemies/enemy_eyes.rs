@@ -99,23 +99,3 @@ pub fn move_eyes_to_cursor(
         trans.translation = (settings.offset + look_offest).extend(11.0);
     });
 }
-
-// TODO: Make this work with the new tilemap system
-// /// Make pupils smaller when we hover over the enemy
-// /// We detect this using the grid position of the parent!
-// pub fn make_eyes_scared(
-//     mouse_grid_location: Res<crate::grid::GridMouseLocation>,
-//     mut query_eyes: Query<(&Parent, &mut Transform), With<EyeMarker>>,
-//     query_parent: Query<&crate::GridLocation>
-// ) {
-//     query_eyes.for_each_mut(|(parent, mut trans)| {
-//         let grid_location = query_parent.get(parent.get()).unwrap();
-
-//         if grid_location.x == mouse_grid_location.0 && grid_location.y == mouse_grid_location.1 {
-//             trans.scale = Vec3::new(0.3, 0.3, 1.0);
-//         } else {
-//             trans.scale = Vec3::splat(1.0);
-//         }
-
-//     })
-// }
