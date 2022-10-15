@@ -7,23 +7,15 @@ use bevy_ecs_ldtk::prelude::*;
 use bevy_tweening::lens::{TransformPositionLens, TransformScaleLens};
 use bevy_tweening::{Animator, EaseFunction, Tween, TweeningType};
 
-use super::enemy_components::{
-    EnemyBundle, EnemyMarker, EnemyPath, EnemySpawner, EnemyWaves,
-};
+use crate::grid_position::GridPosition;
+
+use super::enemy_components::{EnemyBundle, EnemyMarker, EnemyPath, EnemySpawner, EnemyWaves};
 use super::enemy_eyes::EyesBundle;
 
 /// Spawn enemies when it is time
 pub fn spawn_enemies(
     mut commands: Commands,
-    mut query: Query<
-        (
-            &Transform,
-            &mut EnemyWaves,
-            &EnemyPath,
-            &GridCoords,
-        ),
-        With<EnemySpawner>,
-    >,
+    mut query: Query<(&Transform, &mut EnemyWaves, &EnemyPath, &GridPosition), With<EnemySpawner>>,
     assets: Res<crate::assets::EnemyAssets>,
 ) {
     query.for_each_mut(|(pos, mut waves, path, grid_pos)| {
@@ -73,41 +65,30 @@ pub fn spawn_enemies(
 /// Move enemies to next location
 pub fn move_enemies(
     mut commands: Commands,
-    mut query: Query<(Entity, &Transform, &mut EnemyPath, &mut GridCoords), With<EnemyMarker>>,
+    mut query: Query<(Entity, &Transform, &mut EnemyPath, &mut GridPosition), With<EnemyMarker>>,
 ) {
     for (entity, pos, mut path, mut grid_loc) in query.iter_mut() {
-        if !path.0.is_empty() {
-            let pos = pos.translation;
-
-            let next_point = path.0.last().unwrap();
-
-            let direction = ((next_point.x - grid_loc.x), (next_point.y - grid_loc.y));
-
-            dbg!(*grid_loc, next_point, direction);
-
-            let movement_vector =
-                Vec2::new(direction.0 as f32, direction.1 as f32).normalize() * 16.;
-            let next_location = pos + movement_vector.extend(0.0);
+        if path.0 != path.1.len() {
+            let next_point = path.1[path.0];
+            let direction = (next_point - IVec2::from(*grid_loc)).clamp(IVec2::NEG_ONE, IVec2::ONE);
+            let world_pos_direction = Vec2::new(direction.x as f32 * 16., direction.y as f32 * 16.);
 
             let tween = Tween::new(
                 EaseFunction::ExponentialInOut,
                 TweeningType::Once,
                 Duration::from_millis(300),
                 TransformPositionLens {
-                    start: pos,
-                    end: next_location,
+                    start: pos.translation,
+                    end: pos.translation + world_pos_direction.extend(0.),
                 },
             );
 
             commands.entity(entity).insert(Animator::new(tween));
+            grid_loc.0 += direction;
 
-            grid_loc.x += direction.0.signum() as i32;
-            grid_loc.y += direction.1.signum() as i32;
-
-            // dbg!(*grid_loc, next_point);
-
-            if grid_loc.x == next_point.x && grid_loc.y == next_point.y {
-                path.0.pop().unwrap();
+            // Move to next point
+            if grid_loc.0 == next_point {
+                path.0 += 1;
             }
         }
     }

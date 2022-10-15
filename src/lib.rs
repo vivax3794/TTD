@@ -18,6 +18,7 @@
 // We will have many private functions in this project, and they should be documented so it is easier to work with
 #![warn(clippy::missing_docs_in_private_items)]
 
+use bevy::asset::AssetServerSettings;
 use bevy::render::texture::ImageSettings;
 use bevy::{prelude::*, winit::WinitSettings};
 use bevy_mod_ui_texture_atlas_image::UiAtlasImagePlugin;
@@ -25,6 +26,7 @@ use iyes_loopless::prelude::AppLooplessStateExt;
 
 #[macro_use]
 mod utils;
+mod grid_position;
 
 mod assets;
 mod state;
@@ -38,7 +40,7 @@ mod ldtk_loader;
 mod enemies;
 mod player;
 
-#[cfg(debug_assertions)]
+#[cfg(feature = "debug_editor")]
 mod debug_system;
 
 use state::Main as MainState;
@@ -55,8 +57,20 @@ const BACK_GROUND_COLOR: Color = Color::DARK_GRAY;
 pub struct GamePlugin;
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
+        // Must be added before DefaultPlugins
         app.insert_resource(ImageSettings::default_nearest());
+        // Asset Hot Reloading
+        #[cfg(debug_assertions)]
+        {
+            app.insert_resource(AssetServerSettings {
+                watch_for_changes: true,
+                ..default()
+            });
+        }
+
         app.add_plugins(DefaultPlugins);
+
+        // Window settings
         app.insert_resource(WinitSettings::game())
             .insert_resource(WindowDescriptor {
                 title: String::from("TTD"),
@@ -64,10 +78,12 @@ impl Plugin for GamePlugin {
             })
             .insert_resource(ClearColor(BACK_GROUND_COLOR));
 
+        // Third party plugins
         app.add_plugin(bevy_prototype_lyon::prelude::ShapePlugin);
         app.add_plugin(UiAtlasImagePlugin);
         app.add_plugin(bevy_tweening::TweeningPlugin);
 
+        // State
         app.add_loopless_state(MainState::LoadingAssets);
         app.add_loopless_state(TurnState::None);
 
@@ -86,7 +102,7 @@ impl Plugin for GamePlugin {
         // Gameplay plugins
         app.add_plugin(enemies::EnemyPlugin);
 
-        #[cfg(debug_assertions)]
+        #[cfg(feature = "debug_editor")]
         {
             app.add_plugin(debug_system::DebugPlugin);
         }

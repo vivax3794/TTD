@@ -30,8 +30,6 @@ impl Plugin for EnemyPlugin {
                 .run_in_state(crate::MainState::Playing),
         );
 
-        // app.add_system(make_eyes_scared.run_in_state(crate::MainState::Playing));
-
         // TURN SYSTEMS
         app.add_enter_system(
             TurnState::InTurn(TurnPart::EnemySpawn),

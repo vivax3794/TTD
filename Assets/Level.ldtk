@@ -666,8 +666,9 @@
 								] },
 								{ "__identifier": "EnemyType", "__value": [
 									"Slime",
-									"Slime",
 									null,
+									null,
+									"Slime",
 									"Slime",
 									null,
 									"Slime",
@@ -680,11 +681,12 @@
 										"id": "V_String",
 										"params": ["Slime"]
 									},
+									null,
+									null,
 									{
 										"id": "V_String",
 										"params": ["Slime"]
 									},
-									null,
 									{
 										"id": "V_String",
 										"params": ["Slime"]

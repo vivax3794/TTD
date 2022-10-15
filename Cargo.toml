@@ -5,34 +5,53 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+debug_editor = ["dep:bevy_editor_pls"]
+fast_compile = ["bevy/dynamic"]
+debug = ["debug_editor", "fast_compile"]
+
 [dependencies]
-bevy_prototype_lyon = "0.6.0" 
-bevy_asset_loader = {version = "0.12.1", features = ["stageless", "progress_tracking_stageless", "2d"]}  
-bevy_ecs_ldtk = "0.4.0"
+# Debug menu, only included in debug builds
+bevy_editor_pls = {version = "0.1.1", optional = true}
+
+# Dyanmic polygons
+bevy_prototype_lyon = "0.6.0"
+# Better asset loading
+bevy_asset_loader = { version = "0.12.1", features = [
+  "stageless",
+  "progress_tracking_stageless",
+  "2d",
+] }
+# Allow using a tilemap in the ui for icons
 bevy_mod_ui_texture_atlas_image = "0.1.9"
+# Animate properties of enteties
+bevy_tweening = {version = "0.5.0", default-features = false}
 
+# Load levels
+bevy_ecs_ldtk = "0.4.0"
+
+# States and transistions
 iyes_loopless = "0.7.1"
-iyes_progress = {version = "0.5.0", features=["iyes_loopless"]}
-bevy_tweening = "0.5.0"
+iyes_progress = { version = "0.5.0", features = ["iyes_loopless"] }
 
-bevy_editor_pls = "0.1.1"
+# Easially derive traits for new-type style components
+derive_more = {version = "0.99", default-features = false, features = [
+  "add", "add_assign", "from"
+]}
 
 [dependencies.bevy]
 version = "0.8.1"
 default-features = false
 features = [
-  # These are the default features:
-  # (re-enable whichever you like)
-
   # Bevy functionality:
-  "bevy_asset",         # Assets management
+  "bevy_asset", # Assets management
   # "bevy_scene",         # Scenes management
   # "bevy_gilrs",         # Gamepad input support
   # "bevy_audio",         # Builtin audio
   "bevy_winit",         # Window management
   "animation",          # Animation support0.
   "x11",                # Linux: Support X11 windowing system
-  # "filesystem_watcher", # Asset hot-reloading
+  "filesystem_watcher", # Asset hot-reloading
   # "render",             # Graphics Rendering
 
   ## "render" actually just includes:
@@ -42,23 +61,14 @@ features = [
   "bevy_sprite",        # 2D (sprites) rendering
   # "bevy_pbr",           # 3D (physically-based) rendering
   # "bevy_gltf",          # GLTF 3D assets format support
-  "bevy_text",          # Text/font rendering
+  "bevy_text", # Text/font rendering
   # "bevy_ui",            # UI toolkit
+
 
   # File formats:
   "png",
   # "hdr",
   # "vorbis",
-
-  # These are other features that may be of interest:
-  # (add any of these that you need)
-
-  # Bevy functionality:
-  "wayland",              # Linux: Support Wayland windowing system
-  # "subpixel_glyph_atlas", # Subpixel antialiasing for text/fonts
-  # "serialize",            # Support for `serde` Serialize/Deserialize
-
-  # File formats:
   # "ktx2", # preferred format for GPU textures
   # "dds",
   # "jpeg",
@@ -70,12 +80,17 @@ features = [
   # "mp3",
   # "wav",
 
+  # Bevy functionality:
+  "wayland", # Linux: Support Wayland windowing system
+  # "subpixel_glyph_atlas", # Subpixel antialiasing for text/fonts
+  # "serialize",            # Support for `serde` Serialize/Deserialize
+
   # Development/Debug features:
-   "dynamic",      # Dynamic linking for faster compile-times
-#   "trace",        # Enable tracing for performance measurement
-#   "trace_tracy",  # Tracing using `tracy`
-#   "trace_chrome", # Tracing using the Chrome format
-#   "wgpu_trace",   # WGPU/rendering tracing
+  # "dynamic", # Dynamic linking for faster compile-times
+  #   "trace",        # Enable tracing for performance measurement
+  #   "trace_tracy",  # Tracing using `tracy`
+  #   "trace_chrome", # Tracing using the Chrome format
+  #   "wgpu_trace",   # WGPU/rendering tracing
 ]
 
 # Enable a small amount of optimization in debug mode
