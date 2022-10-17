@@ -38,7 +38,7 @@ fn enter_game_state(mut commands: Commands) {
 }
 
 /// Entity
-#[derive(Component, Clone, Copy, PartialEq, Eq)]
+#[derive(Component, Default, Clone, Copy, PartialEq, Eq)]
 pub struct RemoveOnGameplayExit;
 
 /// Remove entities marked as gameplay only when we exit the gameplay state

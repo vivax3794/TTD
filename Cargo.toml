@@ -36,7 +36,7 @@ iyes_progress = { version = "0.5.0", features = ["iyes_loopless"] }
 
 # Easially derive traits for new-type style components
 derive_more = {version = "0.99", default-features = false, features = [
-  "add", "add_assign", "from"
+  "add", "add_assign", "from", "index", "index_mut"
 ]}
 
 [dependencies.bevy]

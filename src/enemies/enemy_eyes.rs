@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use bevy_prototype_lyon::{entity::ShapeBundle, prelude::*};
 
 /// Marker for a eye entity
-#[derive(Component)]
+#[derive(Component, Default, Clone, Copy)]
 pub struct EyeMarker;
 
 /// Describes where the eyes are, and how big they are.
@@ -14,14 +14,15 @@ pub struct EyeSettings {
     /// Offset from parent center
     pub offset: Vec2,
 
-    /// How wide is the eye?
-    pub width: f32,
-    /// How high is the eye?
-    pub height: f32,
+    /// How big is the pupil?
+    pub pupil_scale: Vec2,
+
+    /// How big is the eye?
+    pub eye_scale: Vec2,
 }
 
 /// Eyes follow the mouse cursor!
-#[derive(Bundle)]
+#[derive(Bundle, Default)]
 pub struct EyesBundle {
     /// Marker to identitfy this entity as an eye
     pub _m: EyeMarker,
@@ -37,20 +38,21 @@ pub struct EyesBundle {
     pub _cleanup: crate::RemoveOnGameplayExit,
 }
 
-impl Default for EyesBundle {
-    fn default() -> Self {
+impl EyesBundle {
+    /// Create a `EyeBundle` based on the settings,
+    /// you cant just manually pass in `settings` as the `shape` also depends on the inital settings
+    pub fn from_settings(settings: EyeSettings) -> Self {
         Self {
-            _m: EyeMarker,
-            _cleanup: crate::RemoveOnGameplayExit,
-            settings: EyeSettings::default(),
             shape: GeometryBuilder::build_as(
                 &shapes::Rectangle {
-                    extents: Vec2::splat(1.0),
                     origin: RectangleOrigin::Center,
+                    extents: settings.pupil_scale,
                 },
                 DrawMode::Fill(FillMode::color(Color::BLACK)),
-                Transform::from_xyz(0.0, 0.0, 11.0),
+                Transform::default(),
             ),
+            settings,
+            ..default()
         }
     }
 }
@@ -72,7 +74,7 @@ pub fn move_eyes_to_cursor(
                 + settings.offset * parent_pos.to_scale_rotation_translation().0.truncate()
         };
 
-        // Get the direction the eyes are looking
+        // Get the direction from the eyes to the cursor
         // We dont really need to normalize it, but smaller numbers will get us more accurate results.
         let direction = (cursor_pos.0 - abs_pos).normalize();
 
@@ -80,22 +82,22 @@ pub fn move_eyes_to_cursor(
         let x_slope = direction.y / direction.x;
         let y_slope = direction.x / direction.y;
 
-        // calulcate where f(x)/g(y), we use signum to reverse the result when the mouse is on the other side
+        // calulcate where f(x)/g(y) intersect the edge of the eyes
+        // we use `signum` to reverse the result when the mouse is on the other side
         // since at that point the slop is negative when the eyes should be up
-        let y_offset = x_slope * settings.width / 2.0 * direction.x.signum();
-        let x_offset = y_slope * settings.height / 2.0 * direction.y.signum();
+        let y_offset = x_slope * settings.eye_scale.x / 2.0 * direction.x.signum();
+        let x_offset = y_slope * settings.eye_scale.y / 2.0 * direction.y.signum();
 
-        // limit calcualted values to the eyes, this means that the pupil will be stuck in the corner for some sections
-        let x_offset = x_offset
-            .max(-settings.width / 2.0 + 0.5)
-            .min(settings.width / 2.0 - 0.5);
-        let y_offset = y_offset
-            .max(-settings.height / 2.0 + 0.5)
-            .min(settings.height / 2.0 - 0.5);
+        // limit calcualted values to the eyes,
+        // this means that the pupil will be stuck in the corner for some sections
+        let x_limit = settings.eye_scale.x / 2. - settings.pupil_scale.x / 2.;
+        let y_limit = settings.eye_scale.y / 2. - settings.pupil_scale.y / 2.;
+        let x_offset = x_offset.clamp(-x_limit, x_limit);
+        let y_offset = y_offset.clamp(-y_limit, y_limit);
 
         // calculate offset from parent center
-        let look_offest = Vec2::new(x_offset, y_offset);
+        let offset = settings.offset + Vec2::new(x_offset, y_offset);
         // Set Z-Index to 11, since enemies are on Z = 10.
-        trans.translation = (settings.offset + look_offest).extend(11.0);
+        trans.translation = offset.extend(11.0);
     });
 }

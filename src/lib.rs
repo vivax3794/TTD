@@ -26,6 +26,7 @@ use iyes_loopless::prelude::AppLooplessStateExt;
 
 #[macro_use]
 mod utils;
+// mod transform_stacking;
 mod grid_position;
 
 mod assets;
@@ -46,6 +47,7 @@ mod debug_system;
 use state::Main as MainState;
 use state::RemoveOnGameplayExit;
 use turns::{TurnPart, TurnState};
+// use transform_stacking::{StackedTransforms, StackTransformLens};
 
 use camera::MainCamera;
 
@@ -98,6 +100,9 @@ impl Plugin for GamePlugin {
 
         app.add_plugin(mouse_location::MouseWorldPlugin);
         app.add_plugin(camera::CameraPlugin);
+
+        // Movement plugins
+        // app.add_plugin(transform_stacking::StackTransformPlugin);
 
         // Gameplay plugins
         app.add_plugin(enemies::EnemyPlugin);

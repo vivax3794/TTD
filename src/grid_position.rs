@@ -1,7 +1,7 @@
 //! Version of `GridCoords` that uses a `IVec2` instead
 
 use bevy::prelude::{Component, IVec2};
-use bevy_ecs_ldtk::{EntityInstance, GridCoords};
+use bevy_ecs_ldtk::GridCoords;
 use derive_more::{Add, AddAssign, From, Sub, SubAssign};
 
 /// Custom gird position tracker
@@ -19,9 +19,3 @@ impl From<GridPosition> for IVec2 {
         source.0
     }
 }
-
-// impl From<EntityInstance> for GridPosition {
-//     fn from(instance: EntityInstance) -> Self {
-//         instance.grid.into()
-//     }
-// }

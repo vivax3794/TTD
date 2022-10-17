@@ -37,7 +37,7 @@ pub fn get_field<'a>(entity: &'a EntityInstance, field_name: &str) -> &'a FieldV
         }
     }
 
-    panic!("could not find field value with name {}", field_name);
+    panic!("could not find field value with name {field_name}");
 }
 
 /// extracts a value from a pattern, panicing if it doesnt match

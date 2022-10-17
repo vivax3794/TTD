@@ -27,11 +27,17 @@ pub struct EnemyBundle {
     #[bundle]
     pub _sprite: SpriteBundle,
 
+    // /// Holds a list of transforms that will be combined into the final position
+    // pub stacked_transform: StackedTransforms,
+
     /// Path enemy needs to take
     pub path: EnemyPath,
 
     /// Location of enemy in grid, updated by move system
     pub grid_location: GridPosition,
+
+    /// What type is this enemy?
+    pub enemy_type: EnemyType,
 }
 
 impl Default for EnemyBundle {
@@ -42,6 +48,9 @@ impl Default for EnemyBundle {
             _sprite: SpriteBundle::default(),
             path: EnemyPath(0, Vec::new()),
             grid_location: GridPosition::default(),
+            // This will be overwritten when a enemy is spawned, but we need a default!
+            enemy_type: EnemyType::Slime,
+            // stacked_transform: StackedTransforms::new(2),
         }
     }
 }

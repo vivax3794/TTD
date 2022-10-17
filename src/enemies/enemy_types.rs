@@ -4,10 +4,12 @@ use super::enemy_eyes::EyeSettings;
 use bevy::prelude::*;
 
 /// Enemy Types
-#[derive(Debug, Clone, Copy)]
+#[derive(Component, Debug, Clone, Copy)]
 pub enum EnemyType {
     /// Most basic enemy, the slime!
     Slime,
+    /// Sponge is the best enemy!
+    Sponge,
 }
 
 // NOTE: should we be using `TryFrom` instead since we can clearly fail?
@@ -18,9 +20,10 @@ impl From<&str> for EnemyType {
     fn from(name: &str) -> Self {
         match name {
             "Slime" => Self::Slime,
+            "Sponge" => Self::Sponge,
             // We panic because the strings based in should always be valid
             // So a unknown string means there is a type somewhere
-            _ => panic!("unknown enemy variant: {}", name),
+            _ => panic!("unknown enemy variant: {name}"),
         }
     }
 }
@@ -45,15 +48,22 @@ impl EnemyType {
         match self {
             Self::Slime => vec![
                 EyeSettings {
-                    offset: Vec2::new(-1.0, 1.0),
-                    width: 2.0,
-                    height: 2.0,
+                    offset: Vec2::new(-3.0, 3.0),
+                    eye_scale: Vec2::new(4., 4.),
+                    pupil_scale: Vec2::new(2., 2.),
                 },
                 EyeSettings {
-                    offset: Vec2::new(2.0, 1.0),
-                    width: 2.0,
-                    height: 2.0,
+                    offset: Vec2::new(3.0, 3.0),
+                    eye_scale: Vec2::new(4., 4.),
+                    pupil_scale: Vec2::new(2., 2.),
                 },
+            ],
+            Self::Sponge => vec![
+                EyeSettings {
+                    offset: Vec2::new(1., 4.),
+                    eye_scale: Vec2::new(2., 2.),
+                    pupil_scale: Vec2::new(1.5, 1.5),
+                }
             ],
         }
     }
@@ -62,6 +72,7 @@ impl EnemyType {
     pub fn enemy_asset(self, assets: &crate::assets::EnemyAssets) -> Handle<Image> {
         match self {
             Self::Slime => assets.slime.clone_weak(),
+            Self::Sponge => assets.sponge.clone_weak(),
         }
     }
 }

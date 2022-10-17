@@ -3,14 +3,22 @@
 use std::time::Duration;
 
 use bevy::prelude::*;
-use bevy_ecs_ldtk::prelude::*;
 use bevy_tweening::lens::{TransformPositionLens, TransformScaleLens};
 use bevy_tweening::{Animator, EaseFunction, Tween, TweeningType};
 
 use crate::grid_position::GridPosition;
+// use crate::{StackTransformLens, StackedTransforms};
 
 use super::enemy_components::{EnemyBundle, EnemyMarker, EnemyPath, EnemySpawner, EnemyWaves};
 use super::enemy_eyes::EyesBundle;
+
+// /// What indexses of a `StackedTransforms` belongs to what system
+// mod StackedIndexses {
+//     /// Used by enemy move system
+//     pub const ENEMY_MOVE: usize = 0;
+//     /// Used by enemy stacking system
+//     pub const ENEMY_STACK: usize = 1;
+// }
 
 /// Spawn enemies when it is time
 pub fn spawn_enemies(
@@ -38,14 +46,12 @@ pub fn spawn_enemies(
                     },
                     path: path.clone(),
                     grid_location: *grid_pos,
+                    enemy_type,
                     ..default()
                 })
                 .with_children(|parent| {
                     for settings in enemy_type.eye_settings() {
-                        parent.spawn_bundle(EyesBundle {
-                            settings,
-                            ..default()
-                        });
+                        parent.spawn_bundle(EyesBundle::from_settings(settings));
                     }
                 })
                 .insert(Animator::new(Tween::new(
@@ -54,7 +60,10 @@ pub fn spawn_enemies(
                     Duration::from_millis(1000),
                     TransformScaleLens {
                         start: Vec3::ZERO,
-                        end: Vec3::ONE,
+
+                        // Scale from 16 px to 10 px?
+                        // 16 * X = 10 => X = 10 / 16
+                        end: Vec3::new(10. / 16., 10. / 16., 1.),
                     },
                 )));
         }
@@ -65,14 +74,25 @@ pub fn spawn_enemies(
 /// Move enemies to next location
 pub fn move_enemies(
     mut commands: Commands,
-    mut query: Query<(Entity, &Transform, &mut EnemyPath, &mut GridPosition), With<EnemyMarker>>,
+    mut query: Query<
+        (
+            Entity,
+            &Transform,
+            &mut EnemyPath,
+            &mut GridPosition,
+        ),
+        With<EnemyMarker>,
+    >,
 ) {
     for (entity, pos, mut path, mut grid_loc) in query.iter_mut() {
         if path.0 != path.1.len() {
-            let next_point = path.1[path.0];
-            let direction = (next_point - IVec2::from(*grid_loc)).clamp(IVec2::NEG_ONE, IVec2::ONE);
-            let world_pos_direction = Vec2::new(direction.x as f32 * 16., direction.y as f32 * 16.);
+            let next_target_point = path.1[path.0];
+            let direction =
+                (next_target_point - IVec2::from(*grid_loc)).clamp(IVec2::NEG_ONE, IVec2::ONE);
 
+            let next_point = grid_loc.0 + direction;
+
+            let world_pos_direction = Vec2::new(direction.x as f32 * 16., direction.y as f32 * 16.);
             let tween = Tween::new(
                 EaseFunction::ExponentialInOut,
                 TweeningType::Once,
@@ -83,13 +103,18 @@ pub fn move_enemies(
                 },
             );
 
+            dbg!(next_point, next_target_point);
+
             commands.entity(entity).insert(Animator::new(tween));
-            grid_loc.0 += direction;
+            grid_loc.0 = next_point;
 
             // Move to next point
-            if grid_loc.0 == next_point {
+            if grid_loc.0 == next_target_point {
                 path.0 += 1;
             }
         }
     }
 }
+
+// TODO: Since we are going with the health bar idea
+// TODO: we are gonna have to wait until I implement that before we can work on stacking
