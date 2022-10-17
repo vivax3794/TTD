@@ -11,6 +11,10 @@ use crate::{grid_position::GridPosition, utils::get_field};
 #[reflect(Component)]
 pub struct EnemyPath(pub usize, pub Vec<IVec2>);
 
+/// How much health does this enemy have?
+#[derive(Component, Debug, Clone, Copy)]
+pub struct EnemyHealth(pub u8);
+
 /// All enmies will have this components
 #[derive(Component, Default)]
 pub struct EnemyMarker;
@@ -36,6 +40,9 @@ pub struct EnemyBundle {
     /// Location of enemy in grid, updated by move system
     pub grid_location: GridPosition,
 
+    /// How much health we got?
+    pub health: EnemyHealth,
+
     /// What type is this enemy?
     pub enemy_type: EnemyType,
 }
@@ -48,6 +55,7 @@ impl Default for EnemyBundle {
             _sprite: SpriteBundle::default(),
             path: EnemyPath(0, Vec::new()),
             grid_location: GridPosition::default(),
+            health: EnemyHealth(10),
             // This will be overwritten when a enemy is spawned, but we need a default!
             enemy_type: EnemyType::Slime,
             // stacked_transform: StackedTransforms::new(2),

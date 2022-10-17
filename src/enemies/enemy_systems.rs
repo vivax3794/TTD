@@ -9,7 +9,7 @@ use bevy_tweening::{Animator, EaseFunction, Tween, TweeningType};
 use crate::grid_position::GridPosition;
 // use crate::{StackTransformLens, StackedTransforms};
 
-use super::enemy_components::{EnemyBundle, EnemyMarker, EnemyPath, EnemySpawner, EnemyWaves};
+use super::enemy_components::{EnemyBundle, EnemyMarker, EnemyPath, EnemySpawner, EnemyWaves, EnemyHealth};
 use super::enemy_eyes::EyesBundle;
 
 // /// What indexses of a `StackedTransforms` belongs to what system
@@ -36,6 +36,7 @@ pub fn spawn_enemies(
         let current_wave = waves.1[waves.0];
         if let Some(enemy_type) = current_wave {
             commands
+                // Main enemy attributes
                 .spawn_bundle(EnemyBundle {
                     _sprite: SpriteBundle {
                         texture: enemy_type.enemy_asset(&assets),
@@ -44,16 +45,19 @@ pub fn spawn_enemies(
                         ),
                         ..default()
                     },
+                    health: EnemyHealth(enemy_type.enemy_health()),
                     path: path.clone(),
                     grid_location: *grid_pos,
                     enemy_type,
                     ..default()
                 })
+                // Spawn eyes
                 .with_children(|parent| {
                     for settings in enemy_type.eye_settings() {
                         parent.spawn_bundle(EyesBundle::from_settings(settings));
                     }
                 })
+                // Create spawn anumation
                 .insert(Animator::new(Tween::new(
                     EaseFunction::BounceOut,
                     TweeningType::Once,
@@ -65,7 +69,9 @@ pub fn spawn_enemies(
                         // 16 * X = 10 => X = 10 / 16
                         end: Vec3::new(10. / 16., 10. / 16., 1.),
                     },
-                )));
+                ))).with_children(|parent| {
+                    
+                });
         }
         waves.0 += 1;
     });

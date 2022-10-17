@@ -106,6 +106,7 @@ impl Plugin for GamePlugin {
 
         // Gameplay plugins
         app.add_plugin(enemies::EnemyPlugin);
+        app.add_plugin(player::PlayerPlugin);
 
         #[cfg(feature = "debug_editor")]
         {

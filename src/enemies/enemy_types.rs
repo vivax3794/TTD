@@ -75,4 +75,12 @@ impl EnemyType {
             Self::Sponge => assets.sponge.clone_weak(),
         }
     }
+
+    /// How much health should we have?
+    pub fn enemy_health(self) -> u8 {
+        match self {
+            Self::Slime => 2,
+            Self::Sponge => 4,
+        }
+    }
 }
