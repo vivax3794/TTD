@@ -41,13 +41,14 @@ mod ldtk_loader;
 mod enemies;
 mod player;
 
+mod track_bar;
+
 #[cfg(feature = "debug_editor")]
 mod debug_system;
 
 use state::Main as MainState;
 use state::RemoveOnGameplayExit;
 use turns::{TurnPart, TurnState};
-// use transform_stacking::{StackedTransforms, StackTransformLens};
 
 use camera::MainCamera;
 
@@ -101,8 +102,8 @@ impl Plugin for GamePlugin {
         app.add_plugin(mouse_location::MouseWorldPlugin);
         app.add_plugin(camera::CameraPlugin);
 
-        // Movement plugins
-        // app.add_plugin(transform_stacking::StackTransformPlugin);
+        // Ui Widgets
+        app.add_plugin(track_bar::TrackbarPlugin);
 
         // Gameplay plugins
         app.add_plugin(enemies::EnemyPlugin);

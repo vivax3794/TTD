@@ -7,18 +7,11 @@ use bevy_tweening::lens::{TransformPositionLens, TransformScaleLens};
 use bevy_tweening::{Animator, EaseFunction, Tween, TweeningType};
 
 use crate::grid_position::GridPosition;
-// use crate::{StackTransformLens, StackedTransforms};
 
-use super::enemy_components::{EnemyBundle, EnemyMarker, EnemyPath, EnemySpawner, EnemyWaves, EnemyHealth};
+use super::enemy_components::{
+    EnemyBundle, EnemyHealth, EnemyMarker, EnemyPath, EnemySpawner, EnemyWaves,
+};
 use super::enemy_eyes::EyesBundle;
-
-// /// What indexses of a `StackedTransforms` belongs to what system
-// mod StackedIndexses {
-//     /// Used by enemy move system
-//     pub const ENEMY_MOVE: usize = 0;
-//     /// Used by enemy stacking system
-//     pub const ENEMY_STACK: usize = 1;
-// }
 
 /// Spawn enemies when it is time
 pub fn spawn_enemies(
@@ -69,9 +62,7 @@ pub fn spawn_enemies(
                         // 16 * X = 10 => X = 10 / 16
                         end: Vec3::new(10. / 16., 10. / 16., 1.),
                     },
-                ))).with_children(|parent| {
-                    
-                });
+                )));
         }
         waves.0 += 1;
     });
@@ -80,15 +71,7 @@ pub fn spawn_enemies(
 /// Move enemies to next location
 pub fn move_enemies(
     mut commands: Commands,
-    mut query: Query<
-        (
-            Entity,
-            &Transform,
-            &mut EnemyPath,
-            &mut GridPosition,
-        ),
-        With<EnemyMarker>,
-    >,
+    mut query: Query<(Entity, &Transform, &mut EnemyPath, &mut GridPosition), With<EnemyMarker>>,
 ) {
     for (entity, pos, mut path, mut grid_loc) in query.iter_mut() {
         if path.0 != path.1.len() {
