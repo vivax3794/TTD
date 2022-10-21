@@ -33,7 +33,6 @@ pub struct EnemyBundle {
 
     // /// Holds a list of transforms that will be combined into the final position
     // pub stacked_transform: StackedTransforms,
-
     /// Path enemy needs to take
     pub path: EnemyPath,
 
@@ -58,18 +57,9 @@ impl Default for EnemyBundle {
             health: EnemyHealth(10),
             // This will be overwritten when a enemy is spawned, but we need a default!
             enemy_type: EnemyType::Slime,
-            // stacked_transform: StackedTransforms::new(2),
         }
     }
 }
-
-// impl From<EntityInstance> for EnemyPath {
-//     fn from(instance: EntityInstance) -> Self {
-//         let path = extract!(get_field(&instance, "Path"), FieldValue::Points(points) => points);
-//         let path = path.iter().filter_map(|val| *val).collect();
-//         EnemyPath(path)
-//     }
-// }
 
 /// Spawner order of enemies
 #[derive(Default, Clone, Debug, Component)]

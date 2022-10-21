@@ -50,23 +50,24 @@ pub struct TrackbarBundle {
 
 impl TrackbarBundle {
     /// Create neeeded child entities
-    pub fn create_children(&self, mut parent: ChildBuilder) {
+    pub fn create_children(settings: &TrackbarSettings, parent: &mut ChildBuilder) {
         parent.spawn_bundle(GeometryBuilder::build_as(
             &shapes::Rectangle {
-                extents: Vec2::new(self.settings.width, 1.),
+                extents: Vec2::new(settings.width + 2., 2.),
                 origin: RectangleOrigin::TopLeft,
             },
-            DrawMode::Fill(FillMode::color(self.settings.background_color)),
-            Transform::from_xyz(-self.settings.width / 2., 0., 20.),
+            DrawMode::Fill(FillMode::color(settings.background_color)),
+            Transform::from_xyz(-settings.width / 2. - 1., 0.5, 0.),
         ));
         parent
             .spawn_bundle(GeometryBuilder::build_as(
                 &shapes::Rectangle {
+                    // We make it smaller so we get a nice outline
                     extents: Vec2::new(1., 1.),
                     origin: RectangleOrigin::TopLeft,
                 },
-                DrawMode::Fill(FillMode::color(self.settings.filled_color)),
-                Transform::from_xyz(-self.settings.width / 2., 0., 20.),
+                DrawMode::Fill(FillMode::color(settings.filled_color)),
+                Transform::from_xyz(-settings.width / 2., 0., 1.),
             ))
             .insert(FilledMarker);
     }
@@ -84,6 +85,5 @@ fn set_progress_amopunt(
         let width = settings.width * procent_done;
 
         trans.scale.x = width;
-
     }
 }

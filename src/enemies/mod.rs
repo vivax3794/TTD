@@ -39,5 +39,7 @@ impl Plugin for EnemyPlugin {
             TurnState::InTurn(TurnPart::EnemyMove),
             enemy_systems::move_enemies,
         );
+
+        app.add_system(enemy_systems::update_healthbar.run_in_state(crate::MainState::Playing));
     }
 }

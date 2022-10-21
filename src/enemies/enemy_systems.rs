@@ -28,6 +28,13 @@ pub fn spawn_enemies(
 
         let current_wave = waves.1[waves.0];
         if let Some(enemy_type) = current_wave {
+            let health_bar_settings = crate::track_bar::TrackbarSettings {
+                total: enemy_type.enemy_health() as usize,
+                width: 15.,
+                filled_color: Color::rgb(0.8, 0., 0.),
+                background_color: Color::rgb(0., 0., 0.),
+            };
+
             commands
                 // Main enemy attributes
                 .spawn_bundle(EnemyBundle {
@@ -49,6 +56,28 @@ pub fn spawn_enemies(
                     for settings in enemy_type.eye_settings() {
                         parent.spawn_bundle(EyesBundle::from_settings(settings));
                     }
+                })
+                // Spawn enemy health sub entities
+                .with_children(|parent| {
+                    parent
+                        .spawn_bundle(crate::track_bar::TrackbarBundle {
+                            settings: health_bar_settings,
+                            position: SpatialBundle {
+                                transform: Transform {
+                                    translation: Vec3::new(0., -10., 1.),
+                                    scale: Vec3::new(1., 3., 1.),
+                                    ..default()
+                                },
+                                ..default()
+                            },
+                            ..default()
+                        })
+                        .add_children(|parent| {
+                            crate::track_bar::TrackbarBundle::create_children(
+                                &health_bar_settings,
+                                parent,
+                            );
+                        });
                 })
                 // Create spawn anumation
                 .insert(Animator::new(Tween::new(
@@ -92,14 +121,26 @@ pub fn move_enemies(
                 },
             );
 
-            dbg!(next_point, next_target_point);
-
             commands.entity(entity).insert(Animator::new(tween));
             grid_loc.0 = next_point;
 
             // Move to next point
             if grid_loc.0 == next_target_point {
                 path.0 += 1;
+            }
+        }
+    }
+}
+
+/// Set healthbar progress to the current health
+pub fn update_healthbar(
+    query: Query<(&EnemyHealth, &Children), Changed<EnemyHealth>>,
+    mut progress_query: Query<&mut crate::track_bar::TrackbarProgess>,
+) {
+    for (health, children) in query.iter() {
+        for child in children.iter() {
+            if let Ok(mut progress) = progress_query.get_mut(*child) {
+                progress.0 = health.0 as usize;
             }
         }
     }

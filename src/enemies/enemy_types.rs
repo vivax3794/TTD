@@ -58,13 +58,11 @@ impl EnemyType {
                     pupil_scale: Vec2::new(2., 2.),
                 },
             ],
-            Self::Sponge => vec![
-                EyeSettings {
-                    offset: Vec2::new(1., 4.),
-                    eye_scale: Vec2::new(2., 2.),
-                    pupil_scale: Vec2::new(1.5, 1.5),
-                }
-            ],
+            Self::Sponge => vec![EyeSettings {
+                offset: Vec2::new(1., 4.),
+                eye_scale: Vec2::new(2., 2.),
+                pupil_scale: Vec2::new(1.5, 1.5),
+            }],
         }
     }
 
