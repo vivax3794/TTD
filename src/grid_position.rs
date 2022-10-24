@@ -5,7 +5,7 @@ use bevy_ecs_ldtk::GridCoords;
 use derive_more::{Add, AddAssign, From, Sub, SubAssign};
 
 /// Custom gird position tracker
-#[derive(Debug, Copy, Clone, Default, Component, Add, Sub, From, AddAssign, SubAssign)]
+#[derive(Debug, Copy, Clone, Default, Component, Add, Sub, From, AddAssign, SubAssign, PartialEq, Eq)]
 pub struct GridPosition(pub IVec2);
 
 impl From<GridCoords> for GridPosition {

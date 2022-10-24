@@ -31,8 +31,8 @@ pub fn spawn_enemies(
             let health_bar_settings = crate::track_bar::TrackbarSettings {
                 total: enemy_type.enemy_health() as usize,
                 width: 15.,
-                filled_color: Color::rgb(0.8, 0., 0.),
-                background_color: Color::rgb(0., 0., 0.),
+                filled_color: Color::rgba(0.8, 0., 0., 0.7),
+                background_color: Color::rgba(0., 0., 0., 0.8),
             };
 
             commands
@@ -148,3 +148,31 @@ pub fn update_healthbar(
 
 // TODO: Since we are going with the health bar idea
 // TODO: we are gonna have to wait until I implement that before we can work on stacking
+
+/// Stack health bars below eachother when enemies occupy the same space
+pub fn stack_enemies(
+    query: Query<(Entity, &GridPosition, &Children), With<EnemyMarker>>,
+    mut bar_query: Query<&mut Transform, With<crate::track_bar::TrackbarProgess>>
+) {
+    for (entity, position, children) in &query {
+        // find enemies in same grid position
+        let mut in_same_position: Vec<Entity> = vec![entity];
+        for (other_entity, other_position, _) in &query {
+            if other_entity != entity && other_position == position {
+                in_same_position.push(other_entity);
+            }
+        }
+
+        // find my index in the list
+        in_same_position.sort();
+        let my_index = in_same_position.iter().position(|x| x == &entity).unwrap();
+
+        // Move my health bar based on my index
+        // we should only have on health bar, but lets just loop over all of them;
+        for child in children.iter() {
+            if let Ok(mut transform) = bar_query.get_mut(*child) {
+                transform.translation.y = -10. - (my_index as f32 * 8.);
+            }
+        }
+    }
+}

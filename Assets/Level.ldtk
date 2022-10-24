@@ -2403,10 +2403,16 @@
 										"params": ["13,5"]
 									}
 								] },
-								{ "__identifier": "EnemyType", "__value": [ "Slime", null, "Slime" ], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [ {
+								{ "__identifier": "EnemyType", "__value": [ "Slime", null, "Slime", "Slime", "Slime" ], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [ {
 									"id": "V_String",
 									"params": ["Slime"]
 								}, null, {
+									"id": "V_String",
+									"params": ["Slime"]
+								}, {
+									"id": "V_String",
+									"params": ["Slime"]
+								}, {
 									"id": "V_String",
 									"params": ["Slime"]
 								} ] }
@@ -2453,7 +2459,13 @@
 										"params": ["3,5"]
 									}
 								] },
-								{ "__identifier": "EnemyType", "__value": [ null, "Slime", "Slime" ], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [ null, {
+								{ "__identifier": "EnemyType", "__value": [ null, "Slime", "Slime", "Slime", "Slime" ], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [ null, {
+									"id": "V_String",
+									"params": ["Slime"]
+								}, {
+									"id": "V_String",
+									"params": ["Slime"]
+								}, {
 									"id": "V_String",
 									"params": ["Slime"]
 								}, {
