@@ -30,7 +30,7 @@ pub fn spawn_enemies(
         if let Some(enemy_type) = current_wave {
             let health_bar_settings = crate::track_bar::TrackbarSettings {
                 total: enemy_type.enemy_health() as usize,
-                width: 15.,
+                width: 10.,
                 filled_color: Color::rgba(0.8, 0., 0., 0.7),
                 background_color: Color::rgba(0., 0., 0., 0.8),
             };

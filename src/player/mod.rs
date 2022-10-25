@@ -20,5 +20,3 @@ fn reset_health(mut commands: Commands) {
     commands.insert_resource(PlayerHealth(10));
 }
 
-
-

@@ -1,5 +1,7 @@
 //! Control camera and allow for pan and zoom
 
+const BOTTOM_PADDING: f32 = 100.0;
+
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
 
@@ -40,10 +42,12 @@ fn fit_map_to_camera(
     mut query: Query<&mut Transform, With<MainCamera>>,
 ) {
     if current_level.is_changed() || windows.is_changed() {
+        // Get window size
         let primary_window = windows.get_primary().unwrap();
-        let window_height = primary_window.height(); // - BOTTOM_PADDING * 4.;
+        let window_height = primary_window.height() - BOTTOM_PADDING;
         let window_width = primary_window.width();
 
+        // Get level dimensions
         let world_data = asset_store.get(&assets.ldtk_source_file).unwrap();
         let level_data = world_data.get_level(&current_level).unwrap();
         let level_height = level_data.px_hei as f32;
@@ -53,7 +57,7 @@ fn fit_map_to_camera(
 
         // center camera
         trans.translation.x = level_width / 2.;
-        trans.translation.y = level_height / 2.; // - BOTTOM_PADDING;
+        trans.translation.y = level_height / 2.;
 
         // Scale Camera
         let height_scale = level_height / window_height;
@@ -61,5 +65,7 @@ fn fit_map_to_camera(
         let scale = f32::max(height_scale, width_scale);
         trans.scale.x = scale;
         trans.scale.y = scale;
+
+        trans.translation.y -= (BOTTOM_PADDING / 2.) * scale;
     }
 }
