@@ -1,6 +1,6 @@
 //! Control camera and allow for pan and zoom
 
-const BOTTOM_PADDING: f32 = 100.0;
+const BOTTOM_PADDING: f32 = 150.0;
 
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
