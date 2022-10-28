@@ -34,6 +34,7 @@ mod state;
 mod turns;
 
 mod camera;
+mod ui;
 mod mouse_location;
 
 mod ldtk_loader;
@@ -103,6 +104,7 @@ impl Plugin for GamePlugin {
         app.add_plugin(camera::CameraPlugin);
 
         // Ui Widgets
+        app.add_plugin(ui::UiPlugin);
         app.add_plugin(track_bar::TrackbarPlugin);
 
         // Gameplay plugins

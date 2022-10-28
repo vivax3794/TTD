@@ -1,6 +1,7 @@
 //! Control camera and allow for pan and zoom
 
-const BOTTOM_PADDING: f32 = 120.0;
+
+use crate::ui::BOTTOM_PADDING;
 
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
@@ -14,8 +15,6 @@ pub struct CameraPlugin;
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(create_camera);
-        app.add_enter_system(crate::MainState::Playing, create_bottom_ui_padding);
-        // app.add_enter_system(crate::MainState::Playing, fit_map_to_camera);
         app.add_system(fit_map_to_camera.run_in_state(crate::MainState::Playing));
     }
 }
@@ -69,23 +68,4 @@ fn fit_map_to_camera(
 
         trans.translation.y -= (BOTTOM_PADDING / 2.) * scale;
     }
-}
-
-/// Spawn a light gray rectangle at the bottom of the screen to cover the bottom padding
-fn create_bottom_ui_padding(mut commands: Commands) {
-    commands
-        .spawn_bundle(NodeBundle {
-            style: Style {
-                size: Size::new(Val::Percent(100.), Val::Px(BOTTOM_PADDING)),
-                position_type: PositionType::Absolute,
-                position: UiRect {
-                    bottom: Val::Px(0.),
-                    ..Default::default()
-                },
-                ..Default::default()
-            },
-            color: Color::rgb(0.3, 0.3, 0.3).into(),
-            ..Default::default()
-        })
-        .insert(crate::RemoveOnGameplayExit);
 }

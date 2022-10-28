@@ -3,7 +3,6 @@
 use std::time::Duration;
 
 use bevy::prelude::*;
-use bevy_mod_ui_texture_atlas_image::{AtlasImageBundle, UiAtlasImage};
 use iyes_loopless::prelude::*;
 use iyes_progress::prelude::*;
 
@@ -46,7 +45,6 @@ impl Plugin for TurnPlugin {
         // app.add_loopless_state(TurnState::None)
         app.add_enter_system(crate::MainState::Playing, set_inital_turn_state)
             .add_exit_system(crate::MainState::Playing, remove_turn_state);
-        app.add_system(set_turn_icon.run_in_state(crate::MainState::Playing));
         app.add_system(
             make_sure_turn_is_long_enough
                 .track_progress()
@@ -72,63 +70,15 @@ impl Plugin for TurnPlugin {
     }
 }
 
-/// Mark an entity as the turn icon in the ui
-#[derive(Component, Default)]
-struct TurnIconMarker;
 
 /// When we enter gameplay set the inital turn part
-fn set_inital_turn_state(mut commands: Commands, assets: Res<crate::assets::MiscAssets>) {
+fn set_inital_turn_state(mut commands: Commands) {
     commands.insert_resource(NextState(TurnState::InTurn(TurnPart::EnemyTurnStart)));
-
-    commands
-        .spawn_bundle(AtlasImageBundle {
-            atlas_image: UiAtlasImage {
-                atlas: assets.turn_icons.clone_weak(),
-                index: 0,
-            },
-            style: Style {
-                size: Size::new(Val::Px(16. * 5.), Val::Px(16. * 5.)),
-                margin: UiRect {
-                    left: Val::Px(16.),
-                    bottom: Val::Px(16.),
-                    ..default()
-                },
-                ..default()
-            },
-            ..default()
-        })
-        .insert(TurnIconMarker)
-        .insert(crate::RemoveOnGameplayExit);
 }
 
 /// Set turn state to None when we are not in gamplay
 fn remove_turn_state(mut commands: Commands) {
     commands.insert_resource(NextState(TurnState::None));
-}
-
-/// Set turn icon
-fn set_turn_icon(
-    current_state: Res<CurrentState<TurnState>>,
-    mut query: Query<&mut UiAtlasImage, With<TurnIconMarker>>,
-) {
-    if current_state.is_changed() {
-        let img_index = match current_state.0 {
-            TurnState::None => 0,
-            TurnState::InTurn(part) => match part {
-                TurnPart::EnemyTurnStart => 4,
-                TurnPart::EnemySpawn => 0,
-                TurnPart::EnemyMove => 1,
-                TurnPart::EnemyTurnEnd => 5,
-                TurnPart::PlayerTurnStart => 6,
-                TurnPart::PlayerAction => 2,
-                TurnPart::PlayerAttack => 3,
-                TurnPart::PlayerTurnEnd => 7,
-            },
-        };
-
-        let mut ui_atlas = query.single_mut();
-        ui_atlas.index = img_index;
-    }
 }
 
 /// Make turn be at least 100 ms
