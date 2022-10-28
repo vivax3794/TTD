@@ -26,6 +26,7 @@ struct TurnIconMarker;
 /// Spawn a light gray rectangle at the bottom of the screen to cover the bottom padding
 fn create_ui(mut commands: Commands, assets: Res<crate::assets::MiscAssets>) {
     commands
+        // Bottom rectangle
         .spawn_bundle(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.), Val::Px(BOTTOM_PADDING)),
@@ -41,6 +42,7 @@ fn create_ui(mut commands: Commands, assets: Res<crate::assets::MiscAssets>) {
         })
         .insert(crate::RemoveOnGameplayExit)
         .add_children(|parent| {
+            // Turn icons
             parent
                 .spawn_bundle(AtlasImageBundle {
                     atlas_image: UiAtlasImage {
@@ -61,6 +63,9 @@ fn create_ui(mut commands: Commands, assets: Res<crate::assets::MiscAssets>) {
                 .insert(TurnIconMarker)
                 .insert(crate::RemoveOnGameplayExit);
         });
+
+        // We are gonna fake the other UI elements using world space (since our camera doesnt move)
+        
 }
 
 /// Set turn icon
