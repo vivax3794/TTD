@@ -31,13 +31,9 @@ pub fn spawn_despawn_boats(
     for (enemy, children, pos) in enemy_query.iter() {
         let tile_type = get_tile_type_at(tilemap, pos.0);
 
-        dbg!(&tile_type);
-
         let child = children
             .iter()
             .find(|child| boat_query.get(**child).is_ok());
-
-        dbg!(child);
 
         // spawn if on water and does not have boat
         if tile_type == TileType::Water && child.is_none() {
@@ -47,13 +43,22 @@ pub fn spawn_despawn_boats(
                         texture: assets.boat.clone_weak(),
                         ..Default::default()
                     })
-                    .insert(BoatMarker);
+                    .insert(BoatMarker)
+                    .add_children(|parent| {
+                        parent
+                            .spawn_bundle(SpriteBundle {
+                                texture: assets.boat_flag.clone_weak(),
+                                transform: Transform::from_xyz(0., 0., -2.),
+                                ..default()
+                            })
+                            .insert(BoatMarker);
+                    });
             });
         }
         // despawn if not on water and has boat
         else if tile_type != TileType::Water {
             if let Some(child) = child {
-                commnads.entity(*child).despawn();
+                commnads.entity(*child).despawn_recursive();
             }
         }
     }

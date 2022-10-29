@@ -23,6 +23,7 @@
 use bevy::asset::AssetServerSettings;
 use bevy::render::texture::ImageSettings;
 use bevy::{prelude::*, winit::WinitSettings};
+use bevy_embedded_assets::EmbeddedAssetPlugin;
 use bevy_mod_ui_texture_atlas_image::UiAtlasImagePlugin;
 use iyes_loopless::prelude::AppLooplessStateExt;
 
@@ -36,8 +37,8 @@ mod state;
 mod turns;
 
 mod camera;
-mod ui;
 mod mouse_location;
+mod ui;
 
 mod ldtk_loader;
 
@@ -74,8 +75,13 @@ impl Plugin for GamePlugin {
             });
         }
 
-        app.add_plugins(DefaultPlugins);
-
+        app.add_plugins_with(DefaultPlugins, |group| {
+            #[cfg(not(debug_assertions))]
+            {
+                group.add_before::<bevy::asset::AssetPlugin, _>(EmbeddedAssetPlugin);
+            }
+            group
+        });
         // Window settings
         app.insert_resource(WinitSettings::game())
             .insert_resource(WindowDescriptor {

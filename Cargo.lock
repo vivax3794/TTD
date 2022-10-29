@@ -489,6 +489,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_embedded_assets"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9ce178d2804119cf19829bca46c58a30324c1211bc610955d67413b0ee10e3da"
+dependencies = [
+ "bevy",
+ "cargo-emit",
+]
+
+[[package]]
 name = "bevy_encase_derive"
 version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1077,6 +1087,12 @@ dependencies = [
  "log",
  "nix 0.22.3",
 ]
+
+[[package]]
+name = "cargo-emit"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1582e1c9e755dd6ad6b224dcffb135d199399a4568d454bd89fe515ca8425695"
 
 [[package]]
 name = "cc"
@@ -3141,6 +3157,7 @@ dependencies = [
  "bevy_asset_loader",
  "bevy_ecs_ldtk",
  "bevy_editor_pls",
+ "bevy_embedded_assets",
  "bevy_mod_ui_texture_atlas_image",
  "bevy_prototype_lyon",
  "bevy_tweening",

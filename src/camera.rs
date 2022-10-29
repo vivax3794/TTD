@@ -1,7 +1,6 @@
 //! Control camera and allow for pan and zoom
 
-
-use crate::ui::BOTTOM_PADDING;
+use crate::{state::Main, ui::BOTTOM_PADDING};
 
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
@@ -40,6 +39,11 @@ fn fit_map_to_camera(
     asset_store: Res<bevy::asset::Assets<bevy_ecs_ldtk::LdtkAsset>>,
     current_level: Res<bevy_ecs_ldtk::LevelSelection>,
     mut query: Query<&mut Transform, With<MainCamera>>,
+    // without the `Without` these queries might (but should never) refere to the same transform, which would be bad
+    mut world_query: Query<
+        &mut Transform,
+        (With<crate::ldtk_loader::WorldMarker>, Without<MainCamera>),
+    >,
 ) {
     if current_level.is_changed() || windows.is_changed() {
         // Get window size
@@ -55,17 +59,20 @@ fn fit_map_to_camera(
 
         let mut trans = query.single_mut();
 
-        // center camera
-        trans.translation.x = level_width / 2.;
-        trans.translation.y = level_height / 2.;
+        let world_trans = world_query.get_single_mut();
 
-        // Scale Camera
-        let height_scale = level_height / window_height;
-        let width_scale = level_width / window_width;
-        let scale = f32::max(height_scale, width_scale);
-        trans.scale.x = scale;
-        trans.scale.y = scale;
+        if let Ok(mut world_trans) = world_trans {
+            // Scale Camera
+            let height_scale = window_height / level_height;
+            let width_scale = window_width / level_width;
+            let scale = f32::min(height_scale, width_scale);
+            world_trans.scale.x = scale;
+            world_trans.scale.y = scale;
 
-        trans.translation.y -= (BOTTOM_PADDING / 2.) * scale;
+            // center camera
+            trans.translation.x = level_width * scale / 2.;
+            trans.translation.y = level_height * scale / 2.;
+            trans.translation.y -= BOTTOM_PADDING / 2.;
+        }
     }
 }

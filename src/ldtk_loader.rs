@@ -17,12 +17,18 @@ impl Plugin for LDtkMangerPlugin {
     }
 }
 
+/// Marker for the world
+#[derive(Debug, Default, Clone, Copy, Component)]
+pub struct WorldMarker;
+
 /// Insert tilemap resources
 fn setup_tilemap(mut commands: Commands, assets: Res<crate::assets::MiscAssets>) {
-    commands.spawn_bundle(LdtkWorldBundle {
-        ldtk_handle: assets.ldtk_source_file.clone(),
-        ..default()
-    });
+    commands
+        .spawn_bundle(LdtkWorldBundle {
+            ldtk_handle: assets.ldtk_source_file.clone(),
+            ..default()
+        })
+        .insert(WorldMarker);
 }
 
 /// Enums for tile types

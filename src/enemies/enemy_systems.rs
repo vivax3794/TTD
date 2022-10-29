@@ -17,6 +17,7 @@ use super::enemy_eyes::EyesBundle;
 pub fn spawn_enemies(
     mut commands: Commands,
     mut query: Query<(&Transform, &mut EnemyWaves, &EnemyPath, &GridPosition), With<EnemySpawner>>,
+    world_query: Query<Entity, With<crate::ldtk_loader::WorldMarker>>,
     assets: Res<crate::assets::EnemyAssets>,
 ) {
     query.for_each_mut(|(pos, mut waves, path, grid_pos)| {
@@ -35,63 +36,67 @@ pub fn spawn_enemies(
                 background_color: Color::rgba(0., 0., 0., 0.8),
             };
 
-            commands
-                // Main enemy attributes
-                .spawn_bundle(EnemyBundle {
-                    _sprite: SpriteBundle {
-                        texture: enemy_type.enemy_asset(&assets),
-                        transform: Transform::from_translation(
-                            pos.translation.truncate().extend(10.),
-                        ),
+            let world = world_query.single();
+
+            commands.entity(world).add_children(|parent| {
+                parent
+                    // Main enemy attributes
+                    .spawn_bundle(EnemyBundle {
+                        _sprite: SpriteBundle {
+                            texture: enemy_type.enemy_asset(&assets),
+                            transform: Transform::from_translation(
+                                pos.translation.truncate().extend(10.),
+                            ),
+                            ..default()
+                        },
+                        health: EnemyHealth(enemy_type.enemy_health()),
+                        path: path.clone(),
+                        grid_location: *grid_pos,
+                        enemy_type,
                         ..default()
-                    },
-                    health: EnemyHealth(enemy_type.enemy_health()),
-                    path: path.clone(),
-                    grid_location: *grid_pos,
-                    enemy_type,
-                    ..default()
-                })
-                // Spawn eyes
-                .with_children(|parent| {
-                    for settings in enemy_type.eye_settings() {
-                        parent.spawn_bundle(EyesBundle::from_settings(settings));
-                    }
-                })
-                // Spawn enemy health sub entities
-                .with_children(|parent| {
-                    parent
-                        .spawn_bundle(crate::track_bar::TrackbarBundle {
-                            settings: health_bar_settings,
-                            position: SpatialBundle {
-                                transform: Transform {
-                                    translation: Vec3::new(0., -10., 1.),
-                                    scale: Vec3::new(1., 3., 1.),
+                    })
+                    // Spawn eyes
+                    .with_children(|parent| {
+                        for settings in enemy_type.eye_settings() {
+                            parent.spawn_bundle(EyesBundle::from_settings(settings));
+                        }
+                    })
+                    // Spawn enemy health sub entities
+                    .with_children(|parent| {
+                        parent
+                            .spawn_bundle(crate::track_bar::TrackbarBundle {
+                                settings: health_bar_settings,
+                                position: SpatialBundle {
+                                    transform: Transform {
+                                        translation: Vec3::new(0., -10., 1.),
+                                        scale: Vec3::new(1., 3., 1.),
+                                        ..default()
+                                    },
                                     ..default()
                                 },
                                 ..default()
-                            },
-                            ..default()
-                        })
-                        .add_children(|parent| {
-                            crate::track_bar::TrackbarBundle::create_children(
-                                &health_bar_settings,
-                                parent,
-                            );
-                        });
-                })
-                // Create spawn anumation
-                .insert(Animator::new(Tween::new(
-                    EaseFunction::BounceOut,
-                    TweeningType::Once,
-                    Duration::from_millis(1000),
-                    TransformScaleLens {
-                        start: Vec3::ZERO,
+                            })
+                            .add_children(|parent| {
+                                crate::track_bar::TrackbarBundle::create_children(
+                                    &health_bar_settings,
+                                    parent,
+                                );
+                            });
+                    })
+                    // Create spawn anumation
+                    .insert(Animator::new(Tween::new(
+                        EaseFunction::BounceOut,
+                        TweeningType::Once,
+                        Duration::from_millis(1000),
+                        TransformScaleLens {
+                            start: Vec3::ZERO,
 
-                        // Scale from 16 px to 10 px?
-                        // 16 * X = 10 => X = 10 / 16
-                        end: Vec3::new(10. / 16., 10. / 16., 1.),
-                    },
-                )));
+                            // Scale from 16 px to 10 px?
+                            // 16 * X = 10 => X = 10 / 16
+                            end: Vec3::new(10. / 16., 10. / 16., 1.),
+                        },
+                    )));
+            });
         }
         waves.0 += 1;
     });
@@ -152,7 +157,7 @@ pub fn update_healthbar(
 /// Stack health bars below eachother when enemies occupy the same space
 pub fn stack_enemies(
     query: Query<(Entity, &GridPosition, &Children), With<EnemyMarker>>,
-    mut bar_query: Query<&mut Transform, With<crate::track_bar::TrackbarProgess>>
+    mut bar_query: Query<&mut Transform, With<crate::track_bar::TrackbarProgess>>,
 ) {
     for (entity, position, children) in &query {
         // find enemies in same grid position

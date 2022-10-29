@@ -52,4 +52,7 @@ pub struct MiscAssets {
     /// Boat texture
     #[asset(path = "Boat.png")]
     pub boat: Handle<Image>,
+    /// Boat flag pole
+    #[asset(path = "Boat_Flag.png")]
+    pub boat_flag: Handle<Image>,
 }

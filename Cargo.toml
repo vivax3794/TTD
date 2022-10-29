@@ -39,6 +39,8 @@ derive_more = {version = "0.99", default-features = false, features = [
   "add", "add_assign", "from", "index", "index_mut"
 ]}
 
+bevy_embedded_assets = "0.4"
+
 [dependencies.bevy]
 version = "0.8.1"
 default-features = false
@@ -100,3 +102,8 @@ opt-level = 1
 # Enable high optimizations for dependencies (incl. Bevy), but not for our code:
 [profile.dev.package."*"]
 opt-level = 3
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
