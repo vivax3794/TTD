@@ -40,7 +40,10 @@ pub enum TileType {
 
 /// Get the int grid tile type from the tileset
 pub fn get_tile_type_at(tilemap: &LayerInstance, position: IVec2) -> TileType {
-    let index = position.x + position.y * tilemap.c_wid;
+    let x = position.x;
+    let y = tilemap.c_hei - position.y - 1;
+    let index = x + y * tilemap.c_wid;
+
     let tile = tilemap.int_grid_csv[index as usize];
     match tile {
         1 => TileType::Grass,

@@ -43,5 +43,6 @@ impl Plugin for EnemyPlugin {
 
         app.add_system(enemy_systems::update_healthbar.run_in_state(crate::MainState::Playing));
         app.add_system(enemy_systems::stack_enemies.run_in_state(crate::MainState::Playing));
+        app.add_system(enemy_boat::spawn_despawn_boats.run_in_state(crate::MainState::Playing));
     }
 }

@@ -2922,49 +2922,10 @@
 										"params": ["14,14"]
 									}
 								] },
-								{ "__identifier": "EnemyType", "__value": [
-									"Slime",
-									null,
-									null,
-									"Slime",
-									"Slime",
-									null,
-									null,
-									null,
-									"Slime",
-									"Slime",
-									"Slime"
-								], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [
-									{
-										"id": "V_String",
-										"params": ["Slime"]
-									},
-									null,
-									null,
-									{
-										"id": "V_String",
-										"params": ["Slime"]
-									},
-									{
-										"id": "V_String",
-										"params": ["Slime"]
-									},
-									null,
-									null,
-									null,
-									{
-										"id": "V_String",
-										"params": ["Slime"]
-									},
-									{
-										"id": "V_String",
-										"params": ["Slime"]
-									},
-									{
-										"id": "V_String",
-										"params": ["Slime"]
-									}
-								] }
+								{ "__identifier": "EnemyType", "__value": ["Slime"], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Slime"]
+								}] }
 							]
 						}
 					]

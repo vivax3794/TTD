@@ -5,6 +5,8 @@
 #![allow(clippy::module_name_repetitions)]
 // Clippy doesn like passing Res<...> by value, but you cant take them as references in bevy
 #![allow(clippy::needless_pass_by_value)]
+// We can get some long query types
+#![allow(clippy::type_complexity)]
 // We need to do a lot of casting between i32 and f32 because we translate between world and grid positions
 // And while clippy is right that we could lose precision, this only happens for really large values
 // And we wont hit those large values in this project
