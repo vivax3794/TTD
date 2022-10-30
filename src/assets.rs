@@ -28,9 +28,9 @@ pub struct EnemyAssets {
     #[asset(path = "Enemies/Slime.png")]
     pub slime: Handle<Image>,
 
-    /// The best sponge
-    #[asset(path = "Enemies/Sponge.png")]
-    pub sponge: Handle<Image>,
+    /// And orc!
+    #[asset(path = "Enemies/Orc.png")]
+    pub orc: Handle<Image>,
 }
 
 /// misc assets

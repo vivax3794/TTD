@@ -8,8 +8,8 @@ use bevy::prelude::*;
 pub enum EnemyType {
     /// Most basic enemy, the slime!
     Slime,
-    /// Sponge is the best enemy!
-    Sponge,
+    /// Orc
+    Orc,
 }
 
 // NOTE: should we be using `TryFrom` instead since we can clearly fail?
@@ -20,7 +20,7 @@ impl From<&str> for EnemyType {
     fn from(name: &str) -> Self {
         match name {
             "Slime" => Self::Slime,
-            "Sponge" => Self::Sponge,
+            "Orc" => Self::Orc,
             // We panic because the strings based in should always be valid
             // So a unknown string means there is a type somewhere
             _ => panic!("unknown enemy variant: {name}"),
@@ -58,11 +58,13 @@ impl EnemyType {
                     pupil_scale: Vec2::new(2., 2.),
                 },
             ],
-            Self::Sponge => vec![EyeSettings {
-                offset: Vec2::new(1., 4.),
-                eye_scale: Vec2::new(2., 2.),
-                pupil_scale: Vec2::new(1.5, 1.5),
-            }],
+            Self::Orc => vec![
+                EyeSettings {
+                    offset: Vec2::new(-2., 6.),
+                    eye_scale: Vec2::new(2., 2.),
+                    pupil_scale: Vec2::new(1.5, 1.5)
+                }
+            ]
         }
     }
 
@@ -70,7 +72,7 @@ impl EnemyType {
     pub fn enemy_asset(self, assets: &crate::assets::EnemyAssets) -> Handle<Image> {
         match self {
             Self::Slime => assets.slime.clone_weak(),
-            Self::Sponge => assets.sponge.clone_weak(),
+            Self::Orc => assets.orc.clone_weak(),
         }
     }
 
@@ -78,7 +80,7 @@ impl EnemyType {
     pub fn enemy_health(self) -> u8 {
         match self {
             Self::Slime => 2,
-            Self::Sponge => 4,
+            Self::Orc => 4,
         }
     }
 }

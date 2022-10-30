@@ -12,8 +12,8 @@ pub struct BoatMarker;
 /// Spawn boat under enemies on water
 pub fn spawn_despawn_boats(
     mut commnads: Commands,
-    enemy_query: Query<
-        (Entity, &Children, &GridPosition),
+    mut enemy_query: Query<
+        (Entity, &Children, &GridPosition, &mut Transform),
         (
             With<super::enemy_components::EnemyMarker>,
             Changed<GridPosition>,
@@ -28,7 +28,7 @@ pub fn spawn_despawn_boats(
     let level_data = world_data.get_level(&current_level).unwrap();
     let tilemap = level_data.layer_instances.as_ref().unwrap().last().unwrap();
 
-    for (enemy, children, pos) in enemy_query.iter() {
+    for (enemy, children, pos, mut enemy_trans) in enemy_query.iter_mut() {
         let tile_type = get_tile_type_at(tilemap, pos.0);
 
         let child = children
@@ -37,6 +37,7 @@ pub fn spawn_despawn_boats(
 
         // spawn if on water and does not have boat
         if tile_type == TileType::Water && child.is_none() {
+            enemy_trans.scale *= 0.5;
             commnads.entity(enemy).add_children(|parent| {
                 parent
                     .spawn_bundle(SpriteBundle {
@@ -58,6 +59,7 @@ pub fn spawn_despawn_boats(
         // despawn if not on water and has boat
         else if tile_type != TileType::Water {
             if let Some(child) = child {
+                enemy_trans.scale *= 2.;
                 commnads.entity(*child).despawn_recursive();
             }
         }
