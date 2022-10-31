@@ -29,13 +29,6 @@ pub fn spawn_enemies(
 
         let current_wave = waves.1[waves.0];
         if let Some(enemy_type) = current_wave {
-            let health_bar_settings = crate::track_bar::TrackbarSettings {
-                total: enemy_type.enemy_health() as usize,
-                width: 10.,
-                filled_color: Color::rgba(0.8, 0., 0., 0.7),
-                background_color: Color::rgba(0., 0., 0., 0.8),
-            };
-
             let world = world_query.single();
 
             commands.entity(world).add_children(|parent| {
@@ -60,28 +53,6 @@ pub fn spawn_enemies(
                         for settings in enemy_type.eye_settings() {
                             parent.spawn_bundle(EyesBundle::from_settings(settings));
                         }
-                    })
-                    // Spawn enemy health sub entities
-                    .with_children(|parent| {
-                        parent
-                            .spawn_bundle(crate::track_bar::TrackbarBundle {
-                                settings: health_bar_settings,
-                                position: SpatialBundle {
-                                    transform: Transform {
-                                        translation: Vec3::new(0., -10., 1.),
-                                        scale: Vec3::new(1., 3., 1.),
-                                        ..default()
-                                    },
-                                    ..default()
-                                },
-                                ..default()
-                            })
-                            .add_children(|parent| {
-                                crate::track_bar::TrackbarBundle::create_children(
-                                    &health_bar_settings,
-                                    parent,
-                                );
-                            });
                     })
                     // Create spawn anumation
                     .insert(Animator::new(Tween::new(

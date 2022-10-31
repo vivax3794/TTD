@@ -1,6 +1,6 @@
 //! Control camera and allow for pan and zoom
 
-use crate::{state::Main, ui::BOTTOM_PADDING};
+use crate::ui::BOTTOM_PADDING;
 
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;

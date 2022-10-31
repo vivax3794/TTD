@@ -60,8 +60,7 @@ fn create_ui(mut commands: Commands, assets: Res<crate::assets::MiscAssets>) {
                     },
                     ..default()
                 })
-                .insert(TurnIconMarker)
-                .insert(crate::RemoveOnGameplayExit);
+                .insert(TurnIconMarker);
         });
 
         // We are gonna fake the other UI elements using world space (since our camera doesnt move)
@@ -91,4 +90,14 @@ fn set_turn_icon(
         let mut ui_atlas = query.single_mut();
         ui_atlas.index = img_index;
     }
+}
+
+
+///  Tells the healthbar what enemy to follow
+struct EnemyHealthBarFollow(Entity);
+
+
+/// create a healthbar for now enemies
+fn create_health_bar(mut commands: Commands, query: Query<(Entity, &crate::enemies::H)>) {
+
 }

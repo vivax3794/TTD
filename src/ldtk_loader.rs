@@ -9,7 +9,7 @@ pub struct LDtkMangerPlugin;
 impl Plugin for LDtkMangerPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugin(LdtkPlugin);
-        app.insert_resource(LevelSelection::Index(7));
+        app.insert_resource(LevelSelection::Index(6));
 
         app.register_ldtk_entity::<crate::enemies::EnemySpawnerBundle>("EnemySpawner");
 
