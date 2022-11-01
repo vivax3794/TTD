@@ -3969,10 +3969,10 @@
 										"params": ["6,10"]
 									}
 								] },
-								{ "__identifier": "EnemyType", "__value": [ "Slime", null ], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [ {
+								{ "__identifier": "EnemyType", "__value": ["Slime"], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Slime"]
-								}, null ] }
+								}] }
 							]
 						}
 					]

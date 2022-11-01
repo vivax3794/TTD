@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use bevy_mod_ui_texture_atlas_image::{AtlasImageBundle, UiAtlasImage};
 use iyes_loopless::prelude::*;
 
-use crate::{TurnPart, TurnState};
+use crate::{track_bar::TrackbarBundle, TurnPart, TurnState};
 
 /// How much space should the ui have at the bottom of the screen?
 pub const BOTTOM_PADDING: f32 = 120.;
@@ -16,6 +16,8 @@ impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_enter_system(crate::MainState::Playing, create_ui);
         app.add_system(set_turn_icon.run_in_state(crate::MainState::Playing));
+        app.add_system(create_health_bar);
+        app.add_system(set_health_bar_progress);
     }
 }
 
@@ -63,8 +65,7 @@ fn create_ui(mut commands: Commands, assets: Res<crate::assets::MiscAssets>) {
                 .insert(TurnIconMarker);
         });
 
-        // We are gonna fake the other UI elements using world space (since our camera doesnt move)
-        
+    // We are gonna fake the other UI elements using world space (since our camera doesnt move)
 }
 
 /// Set turn icon
@@ -92,12 +93,53 @@ fn set_turn_icon(
     }
 }
 
-
 ///  Tells the healthbar what enemy to follow
+#[derive(Component, Clone, Debug)]
 struct EnemyHealthBarFollow(Entity);
 
-
 /// create a healthbar for now enemies
-fn create_health_bar(mut commands: Commands, query: Query<(Entity, &crate::enemies::H)>) {
+fn create_health_bar(
+    mut commands: Commands,
+    query: Query<(Entity, &crate::enemies::EnemyHealth), Added<crate::enemies::EnemyMarker>>,
+) {
+    for (entity, health) in query.iter() {
+        commands
+            .spawn_bundle(TrackbarBundle {
+                ui_components: NodeBundle {
+                    style: Style {
+                        size: Size::new(Val::Px(40.), Val::Px(10.)),
+                        position_type: PositionType::Absolute,
+                        position: UiRect {
+                            bottom: Val::Px(500.),
+                            left: Val::Px(100.),
+                            ..Default::default()
+                        },
+                        ..default()
+                    },
+                    ..default()
+                },
+                settings: crate::track_bar::TrackbarSettings {
+                    total: health.0 as usize,
+                    filled_color: Color::rgb(1., 0., 0.),
+                    background_color: Color::rgb(0., 0., 0.),
+                },
+                ..default()
+            })
+            .insert(EnemyHealthBarFollow(entity));
+    }
+}
 
+/// Set the healthbar progress to the health of the enemy
+fn set_health_bar_progress(
+    health_query: Query<&crate::enemies::EnemyHealth>,
+    mut query: Query<(
+        &mut crate::track_bar::TrackbarProgess,
+        &EnemyHealthBarFollow,
+    )>,
+) {
+    for (mut progress, follow) in query.iter_mut() {
+        if let Ok(health) = health_query.get(follow.0) {
+            progress.0 = health.0 as usize;
+        }
+    }
 }
