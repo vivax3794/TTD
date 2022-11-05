@@ -7,7 +7,6 @@ pub struct TrackbarPlugin;
 
 impl Plugin for TrackbarPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(spawn_children);
         app.add_system(set_progress_amount);
     }
 }
@@ -54,8 +53,6 @@ fn spawn_children(
         commands.entity(entity).add_children(|parent| {
             parent.spawn_bundle(NodeBundle {
                 style: Style {
-                    position_type: PositionType::Absolute,
-                    position: UiRect::default(),
                     size: Size::new(Val::Percent(100.), Val::Percent(100.)),
                     ..Default::default()
                 },
@@ -65,13 +62,7 @@ fn spawn_children(
             parent
                 .spawn_bundle(NodeBundle {
                     style: Style {
-                        // position_type: PositionType::Absolute,
-                        position: UiRect {
-                            bottom: Val::Percent(20.),
-                            left: Val::Percent(10.),
-                            ..default()
-                        },
-                        size: Size::new(Val::Percent(0.), Val::Percent(60.)),
+                        size: Size::new(Val::Percent(0.), Val::Percent(100.)),
                         ..Default::default()
                     },
                     color: settings.filled_color.into(),
@@ -92,6 +83,6 @@ fn set_progress_amount(
 
         let procent_done = progress.0 as f32 / settings.total as f32;
 
-        style.size.width = Val::Percent(procent_done * 100. * 0.8);
+        style.size.width = Val::Percent(procent_done * 100.);
     }
 }

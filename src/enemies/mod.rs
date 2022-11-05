@@ -6,7 +6,7 @@ mod enemy_systems;
 mod enemy_types;
 mod enemy_boat;
 
-pub use enemy_components::{EnemySpawnerBundle, EnemyHealth, EnemyMarker};
+pub use enemy_components::EnemySpawnerBundle;
 
 use crate::{TurnPart, TurnState};
 

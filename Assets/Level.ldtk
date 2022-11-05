@@ -28,7 +28,7 @@
 	"simplifiedExport": false,
 	"imageExportMode": "None",
 	"pngFilePattern": null,
-	"backupOnSave": true,
+	"backupOnSave": false,
 	"backupLimit": 10,
 	"levelNamePattern": "Level_%idx",
 	"tutorialDesc": null,
@@ -3969,10 +3969,19 @@
 										"params": ["6,10"]
 									}
 								] },
-								{ "__identifier": "EnemyType", "__value": [ "Slime", null ], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [ {
+								{ "__identifier": "EnemyType", "__value": [ "Slime", "Slime", null, "Slime", "Slime" ], "__type": "Array<LocalEnum.EnemyType>", "__tile": null, "defUid": 57, "realEditorValues": [ {
 									"id": "V_String",
 									"params": ["Slime"]
-								}, null ] }
+								}, {
+									"id": "V_String",
+									"params": ["Slime"]
+								}, null, {
+									"id": "V_String",
+									"params": ["Slime"]
+								}, {
+									"id": "V_String",
+									"params": ["Slime"]
+								} ] }
 							]
 						}
 					]
