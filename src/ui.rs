@@ -18,6 +18,7 @@ impl Plugin for UiPlugin {
         app.add_system(set_turn_icon.run_in_state(crate::MainState::Playing));
         app.add_system(create_health_bar);
         app.add_system(set_health_bar_progress);
+        app.add_system(move_health_bar);
     }
 }
 
@@ -140,6 +141,33 @@ fn set_health_bar_progress(
     for (mut progress, follow) in query.iter_mut() {
         if let Ok(health) = health_query.get(follow.0) {
             progress.0 = health.0 as usize;
+        }
+    }
+}
+
+/// Move healthbar to follow the enemy
+/// We need to compansite for world and camera matrix to get the correct position
+fn move_health_bar(
+    mut health_query: Query<(&mut Style, &EnemyHealthBarFollow)>,
+    enemy_query: Query<&GlobalTransform, With<crate::enemies::EnemyMarker>>,
+    wnds: Res<Windows>,
+    camera_query: Query<(&Camera, &GlobalTransform), With<crate::camera::MainCamera>>,
+) {
+    let window = wnds.get_primary().unwrap();
+    let (camera, camera_transform) = camera_query.single();
+
+    for (mut style, follow) in health_query.iter_mut() {
+        if let Ok(enemy_transform) = enemy_query.get(follow.0) {
+            let world_pos = enemy_transform.translation();
+
+            let matrix = (camera_transform.compute_matrix() * camera.projection_matrix().inverse()).inverse();
+            let screen_pos_trunc = matrix.project_point3(world_pos);
+
+            let windows_size = Vec2::new(window.width(), window.height());
+            let screen_pos = (screen_pos_trunc.truncate() + Vec2::ONE) / 2. * windows_size;
+
+            style.position.left = Val::Px(screen_pos.x);
+            style.position.bottom = Val::Px(screen_pos.y);
         }
     }
 }

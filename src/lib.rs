@@ -20,10 +20,10 @@
 // We will have many private functions in this project, and they should be documented so it is easier to work with
 #![warn(clippy::missing_docs_in_private_items)]
 
+#[cfg(feature = "debug")]
 use bevy::asset::AssetServerSettings;
 use bevy::render::texture::ImageSettings;
 use bevy::{prelude::*, winit::WinitSettings};
-use bevy_embedded_assets::EmbeddedAssetPlugin;
 use bevy_mod_ui_texture_atlas_image::UiAtlasImagePlugin;
 use iyes_loopless::prelude::AppLooplessStateExt;
 
@@ -49,6 +49,8 @@ mod track_bar;
 
 #[cfg(feature = "debug_editor")]
 mod debug_system;
+#[cfg(feature = "standalone")]
+use bevy_embedded_assets::EmbeddedAssetPlugin;
 
 use state::Main as MainState;
 use state::RemoveOnGameplayExit;
@@ -67,7 +69,7 @@ impl Plugin for GamePlugin {
         // Must be added before DefaultPlugins
         app.insert_resource(ImageSettings::default_nearest());
         // Asset Hot Reloading
-        #[cfg(debug_assertions)]
+        #[cfg(feature = "debug")]
         {
             app.insert_resource(AssetServerSettings {
                 watch_for_changes: true,
@@ -76,7 +78,7 @@ impl Plugin for GamePlugin {
         }
 
         app.add_plugins_with(DefaultPlugins, |group| {
-            #[cfg(not(debug_assertions))]
+            #[cfg(feature = "standalone")]
             {
                 group.add_before::<bevy::asset::AssetPlugin, _>(EmbeddedAssetPlugin);
             }

@@ -7,8 +7,10 @@ edition = "2021"
 
 [features]
 debug_editor = ["dep:bevy_editor_pls"]
-fast_compile = ["bevy/dynamic"]
-debug = ["debug_editor", "fast_compile"]
+standalone = ["dep:bevy_embedded_assets"]
+dll = ["bevy/dynamic"]
+
+debug = ["debug_editor", "dll"]
 
 [dependencies]
 # Debug menu, only included in debug builds
@@ -39,7 +41,7 @@ derive_more = {version = "0.99", default-features = false, features = [
   "add", "add_assign", "from", "index", "index_mut"
 ]}
 
-bevy_embedded_assets = "0.4"
+bevy_embedded_assets = {version = "0.4", optional = true}
 
 [dependencies.bevy]
 version = "0.8.1"
