@@ -60,7 +60,8 @@ fn create_ui(mut commands: Commands, assets: Res<crate::assets::MiscAssets>) {
                     },
                     ..default()
                 })
-                .insert(TurnIconMarker);
+                .insert(TurnIconMarker)
+                .insert(crate::RemoveOnGameplayExit);
         });
 
         // We are gonna fake the other UI elements using world space (since our camera doesnt move)
@@ -91,7 +92,3 @@ fn set_turn_icon(
         ui_atlas.index = img_index;
     }
 }
-
-
-///  Tells the healthbar what enemy to follow
-struct EnemyHealthBarFollow(Entity);
